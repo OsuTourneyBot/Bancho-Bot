@@ -1,7 +1,9 @@
-package irc;
+package irc.handlers;
+
+import irc.IRCClient;
 
 public interface IRCEventHandler {
-	public boolean match(String data);
+	public String[] match(String[] data);
 
 	/**
 	 * A function that takes in the data and responds accordingly.
@@ -10,5 +12,5 @@ public interface IRCEventHandler {
 	 * @param client The IRCClient that received the event
 	 * @return Whether the event should not be handled by anything else
 	 */
-	public boolean handle(String data, IRCClient client);
+	public boolean handle(String[] data ,IRCClient client);
 }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
+import irc.handlers.IRCEventHandler;
+
 public class IRCClient {
 
 	private String adress;
@@ -29,6 +31,14 @@ public class IRCClient {
 
 	public boolean isConnected() {
 		return connected;
+	}
+
+	public boolean addChannel(Channel channel) {
+		if (channels.containsKey(channel.getName())) {
+			return false;
+		}
+		channels.put(channel.getName(), channel);
+		return true;
 	}
 
 	public Channel getChannel(String name) {

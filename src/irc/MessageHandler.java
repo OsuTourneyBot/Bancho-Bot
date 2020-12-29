@@ -6,6 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import irc.handlers.IRCCommandGroup;
+import irc.handlers.IRCEventGroup;
+import irc.handlers.IRCEventHandler;
+import irc.handlers.IgnoreHandler;
+import irc.handlers.JoinChannelHandler;
+import irc.handlers.PingPongHandler;
 import logger.Logger;
 
 public class MessageHandler extends Thread {
@@ -14,18 +20,31 @@ public class MessageHandler extends Thread {
 	private BufferedReader reader;
 	private Logger logger;
 	private ArrayList<IRCEventHandler> handlers;
+	private IRCEventGroup eventGroup;
 
 	public MessageHandler(IRCClient client, InputStream inputStream) {
 		this.client = client;
 		this.reader = new BufferedReader(new InputStreamReader(inputStream));
 		this.handlers = new ArrayList<IRCEventHandler>();
 		this.logger = Logger.getLogger();
-		addHandler(new PingPongHandler());
+
+		IRCCommandGroup commandGroup = new IRCCommandGroup();
+
+		handlers.add(commandGroup);
+		handlers.add(new IgnoreHandler());
+
+		// Accept everything since this is the base group.
+		eventGroup = new IRCEventGroup(handlers) {
+			@Override
+			public String[] match(String[] data) {
+				return data;
+			}
+		};
 	}
 
 	public void addHandler(IRCEventHandler handler) {
 		synchronized (handlers) {
-			handlers.add(handler);
+			eventGroup.addHandler(handler);
 		}
 	}
 
@@ -34,15 +53,10 @@ public class MessageHandler extends Thread {
 		try {
 			String line;
 			while ((line = reader.readLine()) != null) {
-				boolean handled = false;
+				boolean handled;
+				String[] lineArr = new String[] { line };
 				synchronized (handlers) {
-					for (IRCEventHandler handler : handlers) {
-						// Check if the handler matches and if it does then process it
-						if ((handled |= handler.match(line)) && handler.handle(line, client)) {
-							// If the handler says that nothing else should process it, await next message
-							break;
-						}
-					}
+					handled = eventGroup.handle(lineArr, client);
 				}
 				if (!handled) {
 					logger.println(this, "Message not handled --");
