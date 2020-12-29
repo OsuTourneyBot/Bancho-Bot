@@ -1,16 +1,20 @@
 package irc;
 
-import irc.handlers.IRCEventGroup;
+import java.util.ArrayList;
+
+import irc.handlers.ChannelHandler;
+import irc.handlers.IRCEventHandler;
 
 public class Channel {
 
 	private IRCClient client;
 	private String name;
-	private IRCEventGroup eventGroup;
+	private ChannelHandler channelHandler;
 
 	public Channel(IRCClient client, String name) {
 		this.client = client;
 		this.name = name;
+		channelHandler = new ChannelHandler(this, new ArrayList<IRCEventHandler>());
 	}
 
 	public String getName() {
@@ -23,5 +27,13 @@ public class Channel {
 
 	public void flush() {
 		client.flush();
+	}
+
+	public void addHandler(IRCEventHandler handler) {
+		channelHandler.addHandler(handler);
+	}
+
+	public boolean removeHandler(IRCEventHandler handler) {
+		return channelHandler.removeHandler(handler);
 	}
 }

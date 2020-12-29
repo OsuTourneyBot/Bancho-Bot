@@ -1,4 +1,4 @@
-package Bancho;
+package bancho;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
