@@ -24,7 +24,7 @@ public class RuleBuilder {
 	 * @param best what the tourney is out of
 	 * @param players an arraylist containing the names of all participating players
 	 */
-	public RuleBuilder(String set, MapPool pool, int best, ArrayList<String> players, int team, int numbans) {
+	public RuleBuilder(String set, MapPool pool, int best, ArrayList<String> players, int team, int numbans, int wincon) {
 		this.set = set;
 		this.wincondition = wincon;
 		this.mappool = pool;
