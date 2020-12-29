@@ -11,6 +11,7 @@ import irc.handlers.IRCEventGroup;
 import irc.handlers.IRCEventHandler;
 import irc.handlers.IgnoreHandler;
 import irc.handlers.JoinChannelHandler;
+import irc.handlers.MOTDHandler;
 import irc.handlers.PingPongHandler;
 import logger.Logger;
 
@@ -31,6 +32,8 @@ public class MessageHandler extends Thread {
 		IRCCommandGroup commandGroup = new IRCCommandGroup();
 
 		handlers.add(commandGroup);
+		handlers.add(new PingPongHandler());
+		handlers.add(new MOTDHandler());
 		handlers.add(new IgnoreHandler());
 
 		// Accept everything since this is the base group.

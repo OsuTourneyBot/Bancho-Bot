@@ -18,6 +18,10 @@ public class Channel {
 	}
 
 	public void message(String data) {
-		client.write("PRIVMSG " + name + " " + data);
+		client.write("PRIVMSG #" + name + " " + data);
+	}
+
+	public void flush() {
+		client.flush();
 	}
 }

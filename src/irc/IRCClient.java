@@ -10,7 +10,7 @@ public class IRCClient {
 
 	private String adress;
 	private int port;
-	private String username;
+	protected String username;
 	private String password;
 	private boolean connected = false;
 
@@ -19,7 +19,7 @@ public class IRCClient {
 	private Socket socket;
 	private RateLimitedPrintStream printStream;
 	private MessageHandler messageHandler;
-
+	
 	public IRCClient(String adress, int port, String username, String password) {
 		this.adress = adress;
 		this.port = port;
@@ -28,7 +28,7 @@ public class IRCClient {
 
 		this.channels = new HashMap<String, Channel>();
 	}
-
+	
 	public boolean isConnected() {
 		return connected;
 	}
@@ -39,6 +39,10 @@ public class IRCClient {
 		}
 		channels.put(channel.getName(), channel);
 		return true;
+	}
+
+	public boolean removeChannel(Channel channel) {
+		return channels.remove(channel.getName(), channel);
 	}
 
 	public Channel getChannel(String name) {
@@ -57,17 +61,23 @@ public class IRCClient {
 		messageHandler.addHandler(handler);
 	}
 
-	public void connect() throws IOException {
+	public IRCClient getSelf() {
+		return this;
+	}
+	
+	public void connect() throws IOException, InterruptedException {
 		if (connected) {
 			throw new IOException("IRC Client already connected");
 		}
 		socket = new Socket(adress, port);
 		printStream = new RateLimitedPrintStream(socket.getOutputStream());
-		messageHandler = new MessageHandler(this, socket.getInputStream());
+		messageHandler = new MessageHandler(getSelf(), socket.getInputStream());
 
-		connected = true;
 		listen();
 		register();
+		synchronized (this) {
+			this.wait();
+		}
 	}
 
 	private void listen() {
