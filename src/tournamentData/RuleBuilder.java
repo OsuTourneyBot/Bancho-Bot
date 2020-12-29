@@ -1,4 +1,4 @@
-package RuleBuilder;
+package tournamentData;
 import java.util.ArrayList;
 public class RuleBuilder {
 	
