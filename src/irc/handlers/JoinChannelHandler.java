@@ -14,7 +14,7 @@ public class JoinChannelHandler implements IRCEventHandler {
 
 	@Override
 	public String[] match(String[] data) {
-		if (data[0].equals("JOIN")) {
+		if (data[2].equals("JOIN")) {
 			return data;
 		} else {
 			return null;
@@ -23,9 +23,9 @@ public class JoinChannelHandler implements IRCEventHandler {
 
 	@Override
 	public boolean handle(String[] data, IRCClient client) {
-		String channelName = data[1];
+		String channelName = data[3].substring(2);
 		client.addChannel(new Channel(client, channelName));
-		logger.println(this, "JOINED: " + data[0]);
+		logger.println(this, "JOINED: " + channelName);
 		return true;
 	}
 

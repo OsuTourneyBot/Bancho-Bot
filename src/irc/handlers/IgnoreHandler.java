@@ -6,7 +6,7 @@ public class IgnoreHandler implements IRCEventHandler {
 
 	@Override
 	public String[] match(String[] data) {
-		if (data[0].matches(":.* QUIT.*")) {
+		if (data[0].matches(":.* QUIT :.*")) {
 			return new String[] {};
 		} else {
 			return null;
