@@ -3,6 +3,7 @@ package irc.handlers;
 import irc.IRCClient;
 
 public interface IRCEventHandler {
+	// return null if it does not find it
 	public String[] match(String[] data);
 
 	/**
