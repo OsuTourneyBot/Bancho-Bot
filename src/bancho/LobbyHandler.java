@@ -9,13 +9,21 @@ public class LobbyHandler {
 
 	public LobbyHandler(Channel channel) {
 		this.channel = channel;
-		channel.message("!mp invite AssainPro");
+		message("!mp invite AssainPro");
+		flush();
+	}
+
+	public void message(String message) {
+		channel.message(message);
+	}
+
+	public void flush() {
 		channel.flush();
 	}
 
 	public void close() {
-		channel.message("!mp close");
-		channel.flush();
+		message("!mp close");
+		flush();
 	}
 
 	public void addLobbyHandler(IRCEventHandler handler) {

@@ -51,6 +51,12 @@ public class MessageHandler extends Thread {
 		}
 	}
 
+	public boolean removeHanlder(IRCEventHandler handler) {
+		synchronized (handlers) {
+			return eventGroup.removeHandler(handler);
+		}
+	}
+
 	@Override
 	public void run() {
 		try {

@@ -8,6 +8,7 @@ import irc.handlers.IRCEventHandler;
 public class Channel {
 
 	private IRCClient client;
+
 	private String name;
 	private ChannelHandler channelHandler;
 
@@ -35,5 +36,9 @@ public class Channel {
 
 	public boolean removeHandler(IRCEventHandler handler) {
 		return channelHandler.removeHandler(handler);
+	}
+
+	public ChannelHandler getChannelHandler() {
+		return channelHandler;
 	}
 }
