@@ -1,4 +1,4 @@
-package Bancho;
+package bancho;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class BanchoBot extends IRCClient {
 		write("PRIVMSG BanchoBot :" + message);
 	}
 
-	public void makeLobby(String title) {
+	public LobbyHandler makeLobby(String title) {
 		lobbies.put(title, null);
 		pmBanchoBot("!mp make " + title);
 		flush();
@@ -45,6 +45,7 @@ public class BanchoBot extends IRCClient {
 				e.printStackTrace();
 			}
 		}
+		return lobbies.get(title);
 	}
 
 	public void setLobby(String name, LobbyHandler handler) {

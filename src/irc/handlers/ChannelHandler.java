@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import irc.Channel;
 
-public abstract class ChannelHandler extends IRCEventGroup {
+public class ChannelHandler extends IRCEventGroup {
 
 	private Channel channel;
 	private Pattern pattern;
