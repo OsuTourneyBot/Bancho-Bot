@@ -8,6 +8,7 @@ import irc.handlers.IRCEventHandler;
 public class Channel {
 
 	private IRCClient client;
+
 	private String name;
 	private ChannelHandler channelHandler;
 

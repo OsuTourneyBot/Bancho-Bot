@@ -26,7 +26,7 @@ public class RefBot {
 		// start the timer
 		lobby.message("!mp timer " + sec);
 		lobby.flush();
-		BanchoTimerHandler handler = new BanchoTimerHandler(this);
+		BanchoEventHandler handler = new BanchoEventHandler(this);
 		banchoHandler.addHandler(handler);
 
 		synchronized (this) {

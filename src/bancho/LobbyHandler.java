@@ -13,14 +13,14 @@ public class LobbyHandler {
 		flush();
 	}
 
-    public void message(String message) {
+	public void message(String message) {
 		channel.message(message);
 	}
 
 	public void flush() {
 		channel.flush();
 	}
-	
+
 	public void close() {
 		message("!mp close");
 		flush();

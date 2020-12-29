@@ -3,10 +3,10 @@ package refBot;
 import irc.IRCClient;
 import irc.handlers.IRCEventHandler;
 
-public class BanchoTimerHandler implements IRCEventHandler {
+public class BanchoEventHandler implements IRCEventHandler {
 	private RefBot ref;
 
-	BanchoTimerHandler(RefBot ref) {
+	BanchoEventHandler(RefBot ref) {
 		this.ref = ref;
 	}
 
