@@ -43,35 +43,6 @@ public class RuleBuilder {
 		this.wincondition = cond;
 		return this;
 	}
-	/**
-	 * Setter methods for Map pool
-	 * @param pool
-	 * @return
-	 */
-	protected RuleBuilder mappool(MapPool pool) {
-		this.mappool = pool;
-		return this;
-	}
-	
-	/**
-	 * Setter method for best out of
-	 * @param best
-	 * @return
-	 */
-	protected RuleBuilder firstto(int best) {
-		this.firstto= best;
-		return this;
-	}
-	
-	/**
-	 * Setter method for the player array
-	 * @param player array of player names
-	 * @return
-	 */
-	protected RuleBuilder players(ArrayList<String> player) {
-		this.players = player;
-		return this;
-	}
 	
 	/**
 	 * Setter for ready up time
