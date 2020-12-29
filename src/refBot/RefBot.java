@@ -18,7 +18,7 @@ public class RefBot {
      * takes in int (secs) as args
      * waits for either 2 things (a for when time runs out or b for notify for "this" object) [look at bancho bot line 41]
      */
-    public void Timer (int sec) 
+    public void timer (int sec) 
     {
     	// start the timer
     	lobby.message("!mp timer " + sec);
