@@ -7,11 +7,11 @@ public class RuleBuilder {
 	final MapPool mappool;
 	final int bestoutof;
 	final ArrayList<String> players; //The players in this tourney.
-	final int teamsize; // Number of players in a team
-	boolean bans; // opitonal 
+	final int teamsize; // Number of players in a team 
+	int readytime, picktime, bantime; // for the amount of time given
+	//to ready up, pick map and ban maps
 	int numbans; // optional
-	boolean mods; //optional
-	
+	boolean warmup;
 	/**
 	 * Constructor for rule builer
 	 * @param set Name of the rule set
@@ -20,7 +20,7 @@ public class RuleBuilder {
 	 * @param best what the tourney is out of
 	 * @param players an arraylist containing the names of all participating players
 	 */
-	public RuleBuilder(String set, int wincon, ArrayList<OsuMap> pool, int best, ArrayList<String> players, int team) {
+	public RuleBuilder(String set, int wincon, MapPool pool, int best, ArrayList<String> players, int team) {
 		this.set = set;
 		this.wincondition = wincon;
 		this.mappool = pool;
@@ -28,16 +28,7 @@ public class RuleBuilder {
 		this.players = players;
 		this.teamsize = team;
 	}
-	/**
-	 * Setter method for changing bans
-	 * @param bool
-	 * @return this object
-	 */
-	protected RuleBuilder bans(boolean bool) {
-		this.bans = bool;
-		return this;
-	}
-	
+
 	/**
 	 * Setter method for number of bans
 	 * 
@@ -48,16 +39,7 @@ public class RuleBuilder {
 		this.numbans = num;
 		return this;
 	}
-	/**
-	 * Setter method for mods
-	 * 
-	 * @param true or false for mods.
-	 * @return This object
-	 */
-	protected RuleBuilder mods(boolean bool) {
-		this.mods = bool;
-		return this;
-	}
+
 	/**
 	 * Setter methods for Map pool
 	 * @param pool
@@ -87,6 +69,43 @@ public class RuleBuilder {
 		this.players = player;
 		return this;
 	}
+	
+	/**
+	 * Setter for ready up time
+	 * @param time Time in second for length
+	 * @return 
+	 */
+	protected RuleBuilder readytime(int time) {
+		this.readytime = time;
+		return this;
+	}
+	/**
+	 * Setter for pick up time
+	 * @param time Time in second for length
+	 * @return 
+	 */
+	protected RuleBuilder picktime(int time) {
+		this.picktime = time;
+		return this;
+	}
+	/**
+	 * Setter for ban up time
+	 * @param time Time in second for length
+	 * @return 
+	 */
+	protected RuleBuilder bantime(int time) {
+		this.bantime = time;
+		return this;
+	}
+	/**
+	 * Setter method to tell if a warm up exists
+	 * @param bool True for yes, false for no.
+	 * @return
+	 */
+	protected RuleBuilder warmup(boolean bool) {
+		this.warmup = bool;;
+		return this;
+	}
 	/**
 	 * Builder method that creates rule set.
 	 * @return
@@ -95,4 +114,5 @@ public class RuleBuilder {
 		Rule set = new Rule(this);
 		return set;
 	}
-}
+	
+} 
