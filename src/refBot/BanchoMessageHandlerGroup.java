@@ -13,7 +13,7 @@ public class BanchoMessageHandlerGroup extends IRCEventGroup {
 
 	@Override
 	public String[] match(String[] data) {
-		if (data[0].equals("BanchoBot!cho.ppy.sh")) {
+		if (data[0].startsWith("BanchoBot!")) {
 			return new String[] { data[2] };
 		} else {
 			return null;

@@ -25,7 +25,6 @@ public class BanchoPMHandler implements IRCEventHandler {
 
 	@Override
 	public boolean handle(String[] data, IRCClient client) {
-		System.out.println(data[2]);
 		Matcher match = createTournement.matcher(data[2]);
 		if (match.matches()) {
 			String name = match.group(2);

@@ -36,4 +36,8 @@ public class Channel {
 	public boolean removeHandler(IRCEventHandler handler) {
 		return channelHandler.removeHandler(handler);
 	}
+
+	public ChannelHandler getChannelHandler() {
+		return channelHandler;
+	}
 }

@@ -20,7 +20,6 @@ public class PMHandler extends IRCEventGroup {
 
 	@Override
 	public String[] match(String[] data) {
-		System.out.println(data[0]);
 		Matcher match = pattern.matcher(data[0]);
 		if (match.matches() && match.group(3).equalsIgnoreCase(name)) {
 			return new String[] { match.group(1), match.group(2), match.group(4) };
