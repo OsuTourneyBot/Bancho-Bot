@@ -1,3 +1,4 @@
+package RuleBuilder;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -5,7 +6,7 @@ public class Rule {
 	
 	final String set; // required
 	final int wincondition; //require 1 = normal, 2 = accuracy, 3 = scoreV2
-	final ArrayList<OsuMap> mappool; // required mappool
+	final MapPool mappool; // required mappool
 	final int bestoutof; // how many games to be played
 	final ArrayList<String> players; //The players in this tourney.
 	boolean bans; // opitonal 
@@ -27,15 +28,15 @@ public class Rule {
 		this.players = builder.players;
 		
 	}
-	public int getwincon() {
+	private int getwincon() {
 		return this.wincondition;
 	}
 	
-	public boolean getbans() {
+	private boolean getbans() {
 		return this.bans;
 	}
 	
-	public boolean getmods() {
+	private boolean getmods() {
 		return this.mods;
 	}
 	
@@ -44,7 +45,7 @@ public class Rule {
 	 * Removes map from pool if banned.
 	 * @return Returns true if map has been banned false if not.
 	 */
-	public boolean ban(OsuMap) {
+	private boolean ban(OsuMap) {
 		return mappool.remove(OsuMap);
 			
 		}
