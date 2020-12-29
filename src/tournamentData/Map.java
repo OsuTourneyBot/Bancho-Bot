@@ -1,4 +1,4 @@
-package maps;
+package tournamentData;
 
 public class Map 
 {
