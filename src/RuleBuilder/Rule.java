@@ -9,16 +9,17 @@ public class Rule {
 	final MapPool mappool; // required mappool
 	final int bestoutof; // how many games to be played
 	final ArrayList<String> players; //The players in this tourney.
+	final int teamsize; // The size of a team
 	boolean bans; // opitonal 
 	int numbans; // optional
 	boolean mods; //optional
-	
 	/**
 	 * The actual ruleset that takes in a builder
 	 * @param builder The builder for this rule set.
 	 */
 	public Rule(RuleBuilder builder) {
 		
+		this.teamsize = builder.teamsize;
 		this.set = builder.set;
 		this.wincondition = builder.wincondition;
 		this.bans = builder.bans;
