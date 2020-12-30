@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import bancho.LobbyHandler;
 import irc.IRCClient;
 import irc.handlers.IRCEventHandler;
+import tournamentData.Map;
 
 public class RefBot {
 
@@ -29,8 +30,7 @@ public class RefBot {
 		BanchoEventHandler handler = new BanchoEventHandler(this);
 		banchoHandler.addHandler(handler);
 
-		synchronized (this) {
-			try {
+		synchronized (this) {			try {
 				this.wait(); // pauses the function
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -39,6 +39,30 @@ public class RefBot {
 
 		lobby.removeLobbyHanlder(handler);
 
+	}
+	public void startGame() {
+		lobby.message("!mp start 10");
+		lobby.flush();
+		BanchoEventHandler handler = new BanchoEventHandler(this);
+		banchoHandler.addHandler(handler);
+
+		synchronized (this) {			try {
+				this.wait(); // pauses the function
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		lobby.removeLobbyHanlder(handler);
+		
+	}
+	public void setMap(Map m) {
+		String code = Integer.toString(m.getID());
+		lobby.message(("!mp map "+ code));
+		lobby.flush();
+		timer(120);
+		startGame();
+		
+		
 	}
 }
 
