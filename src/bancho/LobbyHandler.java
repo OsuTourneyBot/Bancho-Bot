@@ -1,6 +1,7 @@
 package bancho;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import irc.Channel;
 import irc.handlers.IRCEventHandler;
@@ -12,17 +13,24 @@ public class LobbyHandler {
 	private Channel channel;
 	private BanchoMessageHandlerGroup banchoHandler;
 	private BanchoEventHandler eventHandler;
+	private ScoreHandler scoreHandler;
 	private Beatmap currentMap;
-	
-	
+
+	private HashMap<String, Integer> playerScores;
+	private HashMap<String, Integer> playerMods;
 
 	public LobbyHandler(Channel channel) {
 		this.channel = channel;
 
+		this.playerScores = new HashMap<String, Integer>();
+		this.playerMods = new HashMap<String, Integer>();
+
 		this.banchoHandler = new BanchoMessageHandlerGroup(new ArrayList<IRCEventHandler>());
 		this.eventHandler = new BanchoEventHandler(this);
+		this.scoreHandler = new ScoreHandler(this);
 
 		this.banchoHandler.addHandler(eventHandler);
+		this.banchoHandler.addHandler(scoreHandler);
 		addLobbyHandler(banchoHandler);
 	}
 
@@ -37,6 +45,10 @@ public class LobbyHandler {
 	public void close() {
 		message("!mp close");
 		flush();
+	}
+
+	public Beatmap getCurrentMap() {
+		return currentMap;
 	}
 
 	private void waitForEvent(BanchoEvent event) {
@@ -59,6 +71,14 @@ public class LobbyHandler {
 		return channel.removeHandler(handler);
 	}
 
+	public void setPlayerScore(String player, int score) {
+		playerScores.put(player, score);
+	}
+
+	public void setPlayerMods(String player, int mods) {
+		playerMods.put(player, mods);
+	}
+
 	public void timer(int sec) {
 		message("!mp timer " + sec);
 		flush();
@@ -74,6 +94,8 @@ public class LobbyHandler {
 	}
 
 	public void startGame(int startDelay) {
+		playerScores.clear();
+		playerMods.clear();
 		message("!mp start " + startDelay);
 		flush();
 		waitForEvent(BanchoEvent.MAP_FINISH);

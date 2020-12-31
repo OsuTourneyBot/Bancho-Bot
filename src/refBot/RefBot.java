@@ -16,7 +16,7 @@ public class RefBot {
 		setUp();
 		invitePlayers();
 		lobby.message("!mp password 123456");
-		lobby.setMap(new Beatmap(22538, "", 0, false));
+		lobby.setMap(new Beatmap(1458877, "", 0, false));
 		lobby.waitToStart(120, 10);
 		lobby.message("Match Ended");
 	}
