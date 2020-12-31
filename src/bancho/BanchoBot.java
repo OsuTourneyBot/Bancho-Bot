@@ -59,4 +59,5 @@ public class BanchoBot extends IRCClient {
 	public LobbyHandler getLobby(String name) {
 		return lobbies.get(name);
 	}
+	
 }

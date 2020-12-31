@@ -16,14 +16,14 @@ import java.util.HashMap;
 public class MapPool 
 {
 	// stores songs and mods
-	private HashMap<Integer, Map> songPool;
-	private HashMap<String, Map> tournamentName;
+	private HashMap<Integer, Beatmap> songPool;
+	private HashMap<String, Beatmap> tournamentName;
 	
 	// constructor
-	MapPool()
+	public MapPool()
 	{
-		this.songPool = new HashMap<Integer, Map>();
-		this.tournamentName = new HashMap<String, Map>();
+		this.songPool = new HashMap<Integer, Beatmap>();
+		this.tournamentName = new HashMap<String, Beatmap>();
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class MapPool
 	 * @param name
 	 * @param map
 	 */
-	public void insertMap(String name, Map map)
+	public void insertMap(String name, Beatmap map)
 	{
 		// insert into mod and song pool
 		// the key itself is the songID which is shared between the mods and song pool
@@ -59,12 +59,12 @@ public class MapPool
 		this.songPool.put(map.getID(), map);
 	}
 	
-	public Map getSong(Integer ID)
+	public Beatmap getSong(Integer ID)
 	{
 		return this.songPool.get(ID);
 	}
 	
-	public Map getTournament(String ID)
+	public Beatmap getTournament(String ID)
 	{
 		return this.tournamentName.get(ID);
 	}
