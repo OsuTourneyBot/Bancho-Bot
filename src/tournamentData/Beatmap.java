@@ -1,6 +1,6 @@
 package tournamentData;
 
-public class Map 
+public class Beatmap 
 {
 	// stores the song ID, song link, and mod
 	private int ID;
@@ -8,7 +8,7 @@ public class Map
 	private int mod;
 	private boolean freeMod;
 	
-	Map(int ID, String link, int mod, boolean freeMod)
+	public Beatmap(int ID, String link, int mod, boolean freeMod)
 	{
 		this.ID = ID;
 		this.link = link;
