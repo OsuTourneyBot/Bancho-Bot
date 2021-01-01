@@ -4,13 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 import org.json.JSONObject;
 
-public class getMap {
+public class APIMapInfo {
 	String ID;
 	int Length;
 	String Mode;
@@ -18,15 +16,20 @@ public class getMap {
 	private JSONObject Parent;
 	
 	URL beatmapLink;
-	public getMap(String link) throws IOException {
+	/**
+	 * The constructor for the Get Map object.
+	 * @param link Takes in the link of the beat map
+	 * @param token The JSON object for the token.
+	 * @throws IOException
+	 */
+	public APIMapInfo(String link, APIToken token) throws IOException {
 	// Get API token
-	apiToken token = new apiToken();
 	JSONObject codes = token.pullData();
 	AccessString = codes.getString("access_token");
 	
 	//make header of CAll into correct format.
 	//set up URL
-	beatmapLink = new URL("https://osu.ppy.sh/api/v2/beatmaps/218189");
+	beatmapLink = new URL(link);
 	HttpURLConnection con = (HttpURLConnection) beatmapLink.openConnection();
 	
 	
@@ -52,6 +55,21 @@ public class getMap {
 	    
 	    //JSON object that holds everything
 	 	Parent = new JSONObject(sb.toString());}
+	
+	else { //Unsuccessful connection 
+		
+		//If the token is expired renew it
+		if (token.isExpired()) {
+			System.out.print("The Token has expired. Requesting a new one....");
+			token.GenerateCode();
+			
+		}
+		else {
+			// Else its some other problem we cant fix it.
+			System.out.print("The URL that you have inputed is invalid");
+			
+		}
+	}
 	   }
 	
 	public String GetTitle() {
@@ -66,15 +84,5 @@ public class getMap {
 		return Parent.getString("total_length");
 	}
 	
-	
-	public static void main(String[] args) {
-	try {
-		getMap x = new getMap("x");
-		System.out.print(x.GetID());
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
 	}
 
-}
