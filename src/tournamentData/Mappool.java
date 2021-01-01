@@ -40,7 +40,7 @@ public class Mappool {
 	 * @param ID
 	 * @return
 	 */
-	public boolean hasTournament(String ID) {
+	public boolean hasShortMapName(String ID) {
 		return this.shortMapName.containsKey(ID);
 	}
 

@@ -79,6 +79,14 @@ public class LobbyHandler {
 		playerMods.put(player, mods);
 	}
 
+	public HashMap<String, Integer> getPlayerScores() {
+		return playerScores;
+	}
+
+	public HashMap<String, Integer> getPlayerMods() {
+		return playerMods;
+	}
+
 	public void timer(int sec) {
 		message("!mp timer " + sec);
 		flush();
