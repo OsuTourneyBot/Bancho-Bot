@@ -4,7 +4,6 @@ public class Rule {
 
 	private final String ruleSetName; // required
 
-	private final Mappool mappool; // required mappool
 	private final int firstTo; // how many games to be played
 	private final String[][] players; // The players in this tourney.
 	private final int teamSize; // The size of a team
@@ -33,7 +32,6 @@ public class Rule {
 		this.ruleSetName = builder.setName;
 		this.scoreMode = builder.scoreMode;
 		this.numBans = builder.numBans;
-		this.mappool = builder.mappool;
 		this.players = builder.players;
 		this.firstTo = builder.firstTo;
 		this.maxWarmupLength = builder.maxWarmupLength;
@@ -50,10 +48,6 @@ public class Rule {
 
 	public int getScoreMode() {
 		return scoreMode;
-	}
-
-	public Mappool getMappool() {
-		return mappool;
 	}
 
 	public int getFirstTo() {

@@ -4,7 +4,6 @@ public class RuleBuilder {
 
 	final String setName; // required
 
-	final Mappool mappool;
 	final int firstTo;
 	final String[][] players; // The players in this tourney.
 	final int teamSize; // Number of players in a team.
@@ -23,7 +22,6 @@ public class RuleBuilder {
 	 * Constructor for the rule builder
 	 * 
 	 * @param setName   The name for this rule set
-	 * @param pool      The mappool that the ruleset is for
 	 * @param firstTo   The number of points required to win
 	 * @param players
 	 * @param teamSize
@@ -31,12 +29,11 @@ public class RuleBuilder {
 	 * @param teamMode
 	 * @param scoreMode
 	 */
-	public RuleBuilder(String setName, Mappool pool, int firstTo, String[][] players, int teamSize, int numBans,
+	public RuleBuilder(String setName, int firstTo, String[][] players, int teamSize, int numBans,
 			int teamMode, int scoreMode) {
 		this.setName = setName;
 		this.teamMode = teamMode;
 		this.scoreMode = scoreMode;
-		this.mappool = pool;
 		this.firstTo = firstTo;
 		this.players = players;
 		this.teamSize = teamSize;

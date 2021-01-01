@@ -10,11 +10,12 @@ public class Logger {
 		return logger;
 	}
 
+
 	private Logger() {
 	}
 
 	private void write(Object object, String data) {
-		System.out.print("["+object.getClass().getCanonicalName()+"]: " + data);
+		System.out.print("[" + object.getClass().getCanonicalName() + "]: " + data);
 	}
 
 	public void print(Object object, String data) {
