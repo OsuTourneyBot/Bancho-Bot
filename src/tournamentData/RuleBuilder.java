@@ -4,7 +4,10 @@ public class RuleBuilder {
 
 	final String set; // required
 
+<<<<<<< Updated upstream
 	final MapPool mappool;
+=======
+>>>>>>> Stashed changes
 	final int firstTo;
 	final String[] players; // The players in this tourney.
 	final int teamSize; // Number of players in a team.
@@ -27,6 +30,7 @@ public class RuleBuilder {
 	 * @param best    what the tourney is out of
 	 * @param players an arraylist containing the names of all participating players
 	 */
+<<<<<<< Updated upstream
 	public RuleBuilder(String set, MapPool pool, int best, String[] players, int teamSize, int numbans,
 			int teamMode, int wincon) {
 		this.set = set;
@@ -34,6 +38,14 @@ public class RuleBuilder {
 		this.scoreMode = wincon;
 		this.mappool = pool;
 		this.firstTo = best;
+=======
+	public RuleBuilder(String setName, int firstTo, String[][] players, int teamSize, int numBans,
+			int teamMode, int scoreMode) {
+		this.setName = setName;
+		this.teamMode = teamMode;
+		this.scoreMode = scoreMode;
+		this.firstTo = firstTo;
+>>>>>>> Stashed changes
 		this.players = players;
 		this.teamSize = teamSize;
 		this.numbans = numbans;
