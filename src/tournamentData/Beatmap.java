@@ -34,5 +34,7 @@ public class Beatmap
 		return ID;
 	}
 	
-	
+	public String getTitle() {
+		return "WIP";
+	}
 }
