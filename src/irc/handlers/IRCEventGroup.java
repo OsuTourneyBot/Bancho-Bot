@@ -30,6 +30,10 @@ public abstract class IRCEventGroup implements IRCEventHandler {
 		handlers.add(handler);
 	}
 
+	public void addHandler(IRCEventHandler handler, int idx) {
+		handlers.add(idx, handler);
+	}
+
 	public boolean removeHandler(IRCEventHandler handler) {
 		return handlers.remove(handler);
 	}

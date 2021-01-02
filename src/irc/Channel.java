@@ -33,6 +33,10 @@ public class Channel {
 	public void addHandler(IRCEventHandler handler) {
 		channelHandler.addHandler(handler);
 	}
+	
+	public void addHandler(IRCEventHandler handler, int idx) {
+		channelHandler.addHandler(handler,idx);
+	}
 
 	public boolean removeHandler(IRCEventHandler handler) {
 		return channelHandler.removeHandler(handler);
