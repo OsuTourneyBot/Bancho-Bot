@@ -2,26 +2,19 @@ package tournamentData;
 
 public class Rule {
 
-	final String RuleSetName; // required
+	private final String ruleSetName; // required
 
-<<<<<<< Updated upstream
-	final MapPool mappool; // required mappool
-	final int firstTo; // how many games to be played
-	final String[] players; // The players in this tourney.
-	final int teamsize; // The size of a team
-	final int teamMode;
-=======
-//	private final Mappool mappool; // required mappool
 	private final int firstTo; // how many games to be played
 	private final String[][] players; // The players in this tourney.
 	private final int teamSize; // The size of a team
->>>>>>> Stashed changes
 
-	final int scoreMode; // require 1 = normal, 2 = accuracy, 3 = scoreV2
-	int readytime, picktime, bantime; // for the amount of time given to ready up, pick map and ban maps
-	int numbans; // optional
-	boolean warmup; // optional
-	int maxWarmupLength; // optional
+	private int teamMode;
+	private int scoreMode; // require 1 = normal, 2 = accuracy, 3 = scoreV2
+	private int readyTime, pickTime, banTime; // for the amount of time given to ready up, pick map and ban maps
+	private int numBans; // optional
+	private boolean warmUp; // optional
+	private int maxWarmupLength; // optional
+	private boolean tieBreaker; // optional
 
 	/**
 	 * The actual ruleset that takes in a builder
@@ -29,25 +22,19 @@ public class Rule {
 	 * @param builder The builder for this rule set.
 	 */
 	public Rule(RuleBuilder builder) {
-
-		this.warmup = builder.warmup;
-		this.readytime = builder.readytime;
-		this.picktime = builder.picktime;
-		this.bantime = builder.bantime;
-		this.teamsize = builder.teamSize;
-		this.RuleSetName = builder.set;
+		this.warmUp = builder.warmUp;
+		this.readyTime = builder.readyTime;
+		this.pickTime = builder.pickTime;
+		this.banTime = builder.banTime;
+		this.teamSize = builder.teamSize;
 		this.teamMode = builder.teamMode;
+		this.ruleSetName = builder.setName;
 		this.scoreMode = builder.scoreMode;
-<<<<<<< Updated upstream
-		this.numbans = builder.numbans;
-		this.mappool = builder.mappool;
-=======
 		this.numBans = builder.numBans;
-//		this.mappool = builder.mappool;
->>>>>>> Stashed changes
 		this.players = builder.players;
 		this.firstTo = builder.firstTo;
 		this.maxWarmupLength = builder.maxWarmupLength;
+		this.tieBreaker = builder.tieBreaker;
 	}
 
 	public int getMaxWarmupLength() {
@@ -55,61 +42,51 @@ public class Rule {
 	}
 
 	public String getRuleSetName() {
-		return RuleSetName;
-	}
-
-	public int getTeamMode() {
-		return teamMode;
+		return ruleSetName;
 	}
 
 	public int getScoreMode() {
 		return scoreMode;
 	}
 
-<<<<<<< Updated upstream
-	public MapPool getMappool() {
-		return mappool;
-	}
-=======
-//	public Mappool getMappool() {
-//		return mappool;
-//	}
->>>>>>> Stashed changes
-
 	public int getFirstTo() {
 		return firstTo;
 	}
 
-	public String[] getPlayers() {
+	public String[][] getPlayers() {
 		return players;
 	}
 
-	public int getTeamsize() {
-		return teamsize;
+	public int getTeamSize() {
+		return teamSize;
 	}
 
-	public int getReadytime() {
-		return readytime;
+	public int getReadyTime() {
+		return readyTime;
 	}
 
-	public int getPicktime() {
-		return picktime;
+	public int getPickTime() {
+		return pickTime;
 	}
 
-	public int getBantime() {
-		return bantime;
+	public int getBanTime() {
+		return banTime;
 	}
 
-	public int getNumbans() {
-		return numbans;
+	public int getNumBans() {
+		return numBans;
 	}
 
-	public boolean isWarmup() {
-		return warmup;
+	public boolean hasWarmUp() {
+		return warmUp;
 	}
 
-	public int getBans() {
-		return this.numbans;
+	public int getTeamMode() {
+		return teamMode;
+	}
+
+	public boolean getTieBreaker() {
+		return tieBreaker;
 	}
 
 }

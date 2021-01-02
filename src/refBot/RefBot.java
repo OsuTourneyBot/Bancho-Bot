@@ -27,9 +27,9 @@ public class RefBot {
 	}
 
 	public void invitePlayers() {
-		for (String player : rule.getPlayers()) {
-			lobby.message("!mp invite " + player);
-		}
+//		for (String player : rule.getPlayers()) {
+//			lobby.message("!mp invite " + player);
+//		}
 		lobby.flush();
 	}
 

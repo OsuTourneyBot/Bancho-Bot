@@ -2,53 +2,42 @@ package tournamentData;
 
 public class RuleBuilder {
 
-	final String set; // required
+	final String setName; // required
 
-<<<<<<< Updated upstream
-	final MapPool mappool;
-=======
->>>>>>> Stashed changes
 	final int firstTo;
-	final String[] players; // The players in this tourney.
+	final String[][] players; // The players in this tourney.
 	final int teamSize; // Number of players in a team.
-	final int numbans; // number of bans per team.
+	final int numBans; // number of bans per team.
 
 	int teamMode = 2;
 	int scoreMode = 3; // require 1 = normal, 2 = accuracy, 3 = scoreV2, ScoreV2 by default
-	int readytime = 120; // The time given to warmup, default at 120 seconds.
-	int picktime = 120; // The time given to pick maps, default at 120 seconds.
-	int bantime = 120; // The time given to ban, default at 120 seconds.
-	boolean warmup = true; // Check if warmup is enabled true by default.
+	int readyTime = 120; // The time given to warmup, default at 120 seconds.
+	int pickTime = 120; // The time given to pick maps, default at 120 seconds.
+	int banTime = 120; // The time given to ban, default at 120 seconds.
+	boolean warmUp = true; // Check if warmup is enabled true by default.
 	int maxWarmupLength = 300; // The max length of a warmup map, defaults at 300 seconds.
+	boolean tieBreaker = false;
 
 	/**
-	 * Constructor for rule builder
+	 * Constructor for the rule builder
 	 * 
-	 * @param set     Name of the rule set
-	 * @param wincon  Win condition for tourney
-	 * @param pool    the arraylist containing all the maps
-	 * @param best    what the tourney is out of
-	 * @param players an arraylist containing the names of all participating players
+	 * @param setName   The name for this rule set
+	 * @param firstTo   The number of points required to win
+	 * @param players
+	 * @param teamSize
+	 * @param numBans
+	 * @param teamMode
+	 * @param scoreMode
 	 */
-<<<<<<< Updated upstream
-	public RuleBuilder(String set, MapPool pool, int best, String[] players, int teamSize, int numbans,
-			int teamMode, int wincon) {
-		this.set = set;
-		this.teamMode = teamMode;
-		this.scoreMode = wincon;
-		this.mappool = pool;
-		this.firstTo = best;
-=======
 	public RuleBuilder(String setName, int firstTo, String[][] players, int teamSize, int numBans,
 			int teamMode, int scoreMode) {
 		this.setName = setName;
 		this.teamMode = teamMode;
 		this.scoreMode = scoreMode;
 		this.firstTo = firstTo;
->>>>>>> Stashed changes
 		this.players = players;
 		this.teamSize = teamSize;
-		this.numbans = numbans;
+		this.numBans = numBans;
 	}
 
 	/**
@@ -70,7 +59,7 @@ public class RuleBuilder {
 	 * @return
 	 */
 	public RuleBuilder readytime(int time) {
-		this.readytime = time;
+		this.readyTime = time;
 		return this;
 	}
 
@@ -80,8 +69,8 @@ public class RuleBuilder {
 	 * @param time Time in second for length
 	 * @return
 	 */
-	public RuleBuilder picktime(int time) {
-		this.picktime = time;
+	public RuleBuilder pickTime(int time) {
+		this.pickTime = time;
 		return this;
 	}
 
@@ -91,8 +80,8 @@ public class RuleBuilder {
 	 * @param time Time in second for length
 	 * @return
 	 */
-	public RuleBuilder bantime(int time) {
-		this.bantime = time;
+	public RuleBuilder banTime(int time) {
+		this.banTime = time;
 		return this;
 	}
 
@@ -102,9 +91,8 @@ public class RuleBuilder {
 	 * @param bool True for yes, false for no.
 	 * @return
 	 */
-	public RuleBuilder warmup(boolean bool) {
-		this.warmup = bool;
-		;
+	public RuleBuilder warmUp(boolean bool) {
+		this.warmUp = bool;
 		return this;
 	}
 
@@ -127,6 +115,11 @@ public class RuleBuilder {
 	 */
 	public RuleBuilder teamMode(int teamMode) {
 		this.teamMode = teamMode;
+		return this;
+	}
+
+	public RuleBuilder tieBreaker(boolean tieBreaker) {
+		this.tieBreaker = tieBreaker;
 		return this;
 	}
 
