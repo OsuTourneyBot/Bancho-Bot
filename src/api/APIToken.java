@@ -1,12 +1,6 @@
 package api;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import org.json.JSONObject;
 
 public class APIToken {
@@ -50,7 +44,6 @@ public class APIToken {
 	 */
 	public boolean isExpired() {
 		return ((initiatedTime + (1000 * expiraryTime) <= System.currentTimeMillis()));
-
 	}
 
 	/**
