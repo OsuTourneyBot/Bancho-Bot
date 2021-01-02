@@ -15,8 +15,9 @@ public class APIToken {
 	
 	private static JSONObject parent = new JSONObject();
 	JSONObject obj = new JSONObject();
-	private static JSONObject tokencodes;
+	private static String tokencodes;
 	long initiatedTime;
+	int expiraryTime;
 	
 	/**
 	 * The constructor for trying to get an API Token.
@@ -37,7 +38,7 @@ public class APIToken {
 	 * Returns the Tokens.
 	 * @return JSON Object containing the token.
 	 */
-	public JSONObject pullData() {
+	public String pullData() {
 		return tokencodes;
 	}
 	/**
@@ -45,7 +46,7 @@ public class APIToken {
 	 * @return True if Expired, False if not expired.
 	 */
 	public boolean isExpired() {
-		return((initiatedTime + (1000 * tokencodes.getInt("expires_in")) <= System.currentTimeMillis()));
+		return((initiatedTime + (1000 * expiraryTime) <= System.currentTimeMillis()));
 			
 	}
 	/**
@@ -54,43 +55,16 @@ public class APIToken {
 	 */
 	public void GenerateCode() throws IOException {
 		
-		URL token = new URL("https://osu.ppy.sh/oauth/token");
-		//Set up Connection
-		HttpURLConnection con = (HttpURLConnection)token.openConnection();
+		String body = API.POST("https://osu.ppy.sh/oauth/token", obj.toString(),"Accept", "application/json","Content-Type", "application/json; charset=UTF-8");
 		
-		//Setting up the post request and setting the headers.
-		con.setRequestMethod("POST");
-		con.setDoOutput(true);
-		con.setDoInput(true);
-		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-		con.setRequestProperty("Accept", "application/json");
-		
-		//Sending the JSON file.
-		OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
-		wr.write(obj.toString());
-		wr.flush();
-		
-		//Checking if there is a successful connection
-		int responseCode = con.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_OK) // successful connection
-		{
-			//read every line and put it into a JSON
-		StringBuilder sb = new StringBuilder();  
-		BufferedReader br = new BufferedReader(
-	            new InputStreamReader(con.getInputStream(), "utf-8"));
-	    String line = null;  
-	    while ((line = br.readLine()) != null) {  
-	        sb.append(line + "\n");  
-	        
-		}
-	    br.close();
-	    //Put string into JSON
-	    initiatedTime  = System.currentTimeMillis();
-	    tokencodes = new JSONObject(sb.toString());
-	     }
+		String[] number = body.split(",");
+		String expirary = number[1].split(":")[1];
+		expiraryTime = Integer.parseInt(expirary);
+		tokencodes = number[2].split(":")[1].substring(1, number[2].split(":")[1].length() - 1);
+		initiatedTime  = System.currentTimeMillis();
 		
 		
 	}
-
+	
 
 }
