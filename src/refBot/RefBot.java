@@ -195,7 +195,7 @@ public class RefBot extends Thread {
 	private void banPhase() {
 		commandHandler.setBotCommand(BotCommand.BAN);
 		while (totalBans < rule.getNumBans() * rule.getPlayers().length) {
-			lobby.message(getWhoIsBanning() + " Pick your ban \"!ban <map>\".");
+			lobby.message(getWhoIsBanning() + " Pick your ban using \"!ban <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			thisWait();
@@ -210,7 +210,7 @@ public class RefBot extends Thread {
 		int whoWon = -1;
 		while (whoWon == -1) {
 			commandHandler.setBotCommand(BotCommand.PICK);
-			lobby.message(getWhoIsPicking() + " pick your song \"!pick <map>\".");
+			lobby.message(getWhoIsPicking() + " pick your song using \"!pick <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			// Wait for the song to be chosen
@@ -221,6 +221,8 @@ public class RefBot extends Thread {
 			// Process the scores from last map
 			whoWon = processScores();
 			// Change who is picking
+			lobby.message(
+					rule.getTeamNames()[0] + " | " + points[0] + "-" + points[1] + " | " + rule.getTeamNames()[1]);
 			whosPick = (whosPick + 1) % rule.getPlayers().length;
 		}
 		lobby.message("Team " + rule.getTeamNames()[whoWon] + " has won");
@@ -287,7 +289,7 @@ public class RefBot extends Thread {
 		int[] scores = getScores();
 		lobby.message("Score: " + rule.getTeamNames()[0] + " - " + scores[0]);
 		for (int i = 1; i < scores.length; i++) {
-			lobby.message("Score " + rule.getTeamNames()[i] + " - " + scores[i]);
+			lobby.message("Score: " + rule.getTeamNames()[i] + " - " + scores[i]);
 			if (scores[team] < scores[i]) {
 				team = i;
 			}
