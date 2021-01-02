@@ -39,25 +39,35 @@ public class RefBot extends Thread {
 		this.commandHandler = new BotCommandHandler(this);
 		this.totalBans = 0;
 		this.mappool = mappool;
-
 		this.lobby.addLobbyHandler(commandHandler);
+		this.presentPlayers = new String[rule.getPlayers().length][];
 
-		remainingPicks = new HashSet<String>();
+		this.remainingPicks = new HashSet<String>();
 		for (String map : mappool.getShortMapNames().keySet()) {
 			remainingPicks.add(map);
+		}
+
+		for (int i = 0; i < rule.getPlayers().length; i++) {
+			for (String player : rule.getPlayers()[i]) {
+				playerTeam.put(player, i);
+			}
 		}
 	}
 
 	@Override
 	public void run() {
-		// Temporary for testing
-		this.presentPlayers = rule.getPlayers();
-
 		setUp();
 		invitePlayers();
-
-		// Do something to make sure all players are here before moving on
+		waitForReadyup();
 		startMatch();
+	}
+
+	public LobbyHandler getLobby() {
+		return lobby;
+	}
+
+	public void setPlayerState(String player, int state) {
+		playerState.put(player, state);
 	}
 
 	public void setUp() {
@@ -75,13 +85,48 @@ public class RefBot extends Thread {
 		lobby.flush();
 	}
 
-	private void startMatch() {
-		for (int i = 0; i < presentPlayers.length; i++) {
-			for (String player : presentPlayers[i]) {
-				playerTeam.put(player, i);
+	private void waitForReadyup() {
+		commandHandler.setBotCommand(BotCommand.READY);
+		commandHandler.setWaitingToStart(true);
+		thisWait();
+		commandHandler.setBotCommand(null);
+		commandHandler.setWaitingToStart(false);
+	}
+
+	public boolean allReady() {
+		System.out.println("Check Ready");
+		int[] teamSize = new int[rule.getPlayers().length];
+		boolean flag = true;
+		for (String player : lobby.getPlayerSlots().keySet()) {
+			if (playerTeam.containsKey(player)) {
+				teamSize[playerTeam.get(player)]++;
+			}
+			if (!playerState.containsKey(player) || playerState.get(player) != 1) {
+				flag = false;
+				break;
 			}
 		}
+		for (int i : teamSize) {
+			if (i < rule.getTeamSize()) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			for (int i = 0; i < presentPlayers.length; i++) {
+				presentPlayers[i] = new String[teamSize[i]];
+			}
+			int[] teamIdx = new int[presentPlayers.length];
+			for (String player : lobby.getPlayerSlots().keySet()) {
+				if (!playerTeam.containsKey(player))
+					continue;
+				int team = playerTeam.get(player);
+				presentPlayers[team][teamIdx[team]++] = player;
+			}
+		}
+		return flag;
+	}
 
+	private void startMatch() {
 		banPhase();
 		pickPhase();
 	}

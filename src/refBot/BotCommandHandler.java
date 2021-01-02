@@ -7,6 +7,7 @@ public class BotCommandHandler implements IRCEventHandler {
 
 	private RefBot bot;
 	private BotCommand currentCommand;
+	private boolean waitingToStart = false;
 
 	public BotCommandHandler(RefBot bot) {
 		this.bot = bot;
@@ -17,6 +18,10 @@ public class BotCommandHandler implements IRCEventHandler {
 		currentCommand = command;
 	}
 
+	public void setWaitingToStart(boolean state) {
+		waitingToStart = state;
+	}
+
 	@Override
 	public String[] match(String[] data) {
 		return currentCommand == null ? null : currentCommand.getMatch(data);
@@ -25,7 +30,12 @@ public class BotCommandHandler implements IRCEventHandler {
 	@Override
 	public boolean handle(String[] data, IRCClient client) {
 		if (currentCommand == BotCommand.READY) {
-
+			bot.setPlayerState(data[0], 1);
+			if (waitingToStart && bot.allReady()) {
+				synchronized (bot) {
+					bot.notify();
+				}
+			}
 		} else if (currentCommand == BotCommand.BAN) {
 			// Make sure the right person is actually banning
 			if (bot.getWhoIsBanning().equalsIgnoreCase(data[0])) {

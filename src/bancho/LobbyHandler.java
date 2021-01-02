@@ -19,11 +19,15 @@ public class LobbyHandler {
 	private HashMap<String, Integer> playerScores;
 	private HashMap<String, Integer> playerMods;
 
+	private HashMap<String, Integer> playerSlots;
+
 	public LobbyHandler(Channel channel) {
 		this.channel = channel;
 
 		this.playerScores = new HashMap<String, Integer>();
 		this.playerMods = new HashMap<String, Integer>();
+
+		this.playerSlots = new HashMap<String, Integer>();
 
 		this.banchoHandler = new BanchoMessageHandlerGroup(new ArrayList<IRCEventHandler>());
 		this.eventHandler = new BanchoEventHandler(this);
@@ -85,6 +89,26 @@ public class LobbyHandler {
 
 	public HashMap<String, Integer> getPlayerMods() {
 		return playerMods;
+	}
+
+	public void setPlayerSlot(String player, int slot) {
+		playerSlots.put(player, slot);
+	}
+
+	public void hasPlayerSlot(String player) {
+		playerSlots.containsKey(player);
+	}
+
+	public int getPlayerSlot(String player) {
+		return playerSlots.get(player);
+	}
+
+	public HashMap<String, Integer> getPlayerSlots() {
+		return playerSlots;
+	}
+
+	public int removePlayerSlot(String player) {
+		return playerSlots.remove(player);
 	}
 
 	public void timer(int sec) {
