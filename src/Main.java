@@ -2,8 +2,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import org.json.JSONObject;
-
 import api.OSUAPI;
 import bancho.BanchoBot;
 import fileio.Credential_IO;
@@ -23,13 +21,10 @@ public class Main {
 
 		int APICredentials = Integer.parseInt(credentials.get("APIID"));
 		String APIKey = credentials.get("APIKey");
-		
+
 		OSUAPI.setCredentials(APICredentials, APIKey);
 
-		Beatmap bm = new Beatmap(365060, -1, false);
-		System.out.println(bm.getLink());
-		System.out.println(bm.getTitle());
-		System.out.println(bm.getFullTitle());
+		testBot(IRCUsername, IRCPassword);
 	}
 
 	public static void testBot(String IRCUsername, String IRCPassword) throws IOException, InterruptedException {
@@ -52,5 +47,12 @@ public class Main {
 		};
 		thread.start();
 		ref.start();
+	}
+
+	public static void testBeatmapAPI() {
+		Beatmap bm = new Beatmap(365060, -1, false);
+		System.out.println(bm.getLink());
+		System.out.println(bm.getTitle());
+		System.out.println(bm.getFullTitle());
 	}
 }

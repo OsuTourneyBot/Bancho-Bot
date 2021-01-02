@@ -30,15 +30,6 @@ public class OSUAPI {
 	}
 
 	/**
-	 * Returns the Tokens.
-	 * 
-	 * @return JSON Object containing the token.
-	 */
-	private static String pullData() {
-		return tokenCodes;
-	}
-
-	/**
 	 * Checks if the current token is expired
 	 * 
 	 * @return True if Expired, False if not expired.
@@ -63,7 +54,7 @@ public class OSUAPI {
 			expiraryTime = bodyJSON.getInt("expires_in");
 			tokenCodes = bodyJSON.getString("access_token");
 		} else {
-			System.err.println("Invalid API key");
+			System.err.println("Invalid API key.");
 		}
 
 	}
@@ -72,12 +63,15 @@ public class OSUAPI {
 		if (tokenCodes == null || isExpired()) {
 			GenerateCode();
 		}
-		String AccessString = pullData();
-		String bearer = "Bearer " + AccessString;
+		String bearer = "Bearer " + tokenCodes;
 		String[] header = new String[] { "Authorization", "Accept" };
 		String[] body = new String[] { bearer, "application/json" };
 		String stringBody = API.GET("https://osu.ppy.sh/api/v2/beatmaps/" + id, header, body);
 		JSONObject data = new JSONObject(stringBody);
+		if (!data.has("beatmapset") || !data.getJSONObject("beatmapset").has("id")
+				|| data.getJSONObject("beatmapset").getInt("id") != id) {
+			System.err.println("Something went wrong when getting beatmap data.");
+		}
 		return data;
 	}
 

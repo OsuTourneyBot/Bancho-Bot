@@ -231,7 +231,7 @@ public class RefBot extends Thread {
 			remainingPicks.remove(map);
 			totalBans++;
 			lobby.message("Ban [" + mappool.getShortMapName(map).getLink() + " " + map + "]: "
-					+ mappool.getShortMapName(map).getTitle());
+					+ mappool.getShortMapName(map).getFullTitle());
 			synchronized (this) {
 				this.notify();
 			}
@@ -245,7 +245,7 @@ public class RefBot extends Thread {
 	void pick(String map) {
 		if (remainingPicks.contains(map)) {
 			lobby.message("Picked [" + mappool.getShortMapName(map).getLink() + " " + map + "]: "
-					+ mappool.getShortMapName(map).getTitle());
+					+ mappool.getShortMapName(map).getFullTitle());
 			lobby.flush();
 
 			remainingPicks.remove(map);
