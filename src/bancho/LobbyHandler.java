@@ -70,6 +70,10 @@ public class LobbyHandler {
 	public void addLobbyHandler(IRCEventHandler handler) {
 		channel.addHandler(handler);
 	}
+	
+	public void addLobbyHandler(IRCEventHandler handler,int idx) {
+		channel.addHandler(handler,idx);
+	}
 
 	public boolean removeLobbyHanlder(IRCEventHandler handler) {
 		return channel.removeHandler(handler);

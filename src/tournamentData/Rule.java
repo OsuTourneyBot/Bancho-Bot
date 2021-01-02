@@ -6,6 +6,7 @@ public class Rule {
 
 	private final int firstTo; // how many games to be played
 	private final String[][] players; // The players in this tourney.
+	private final String[] teamNames;
 	private final int teamSize; // The size of a team
 
 	private int teamMode;
@@ -35,6 +36,11 @@ public class Rule {
 		this.firstTo = builder.firstTo;
 		this.maxWarmupLength = builder.maxWarmupLength;
 		this.tieBreaker = builder.tieBreaker;
+
+		this.teamNames = new String[players.length];
+		for (int i = 0; i < players.length; i++) {
+			teamNames[i] = players[i][0];
+		}
 	}
 
 	public int getMaxWarmupLength() {
@@ -55,6 +61,10 @@ public class Rule {
 
 	public String[][] getPlayers() {
 		return players;
+	}
+
+	public String[] getTeamNames() {
+		return teamNames;
 	}
 
 	public int getTeamSize() {

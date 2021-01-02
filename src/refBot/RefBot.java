@@ -1,7 +1,10 @@
 package refBot;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import bancho.BanchoBot;
 import bancho.LobbyHandler;
@@ -25,9 +28,12 @@ public class RefBot extends Thread {
 	private Beatmap currentPick;
 
 	private BotCommandHandler commandHandler;
+	private RollHandler rollHandler;
 	private HashSet<String> remainingPicks;
 	private Mappool mappool;
 	private String[][] presentPlayers;
+	private boolean[] validRoll;
+	private int[] rolls;
 
 	public RefBot(BanchoBot bot, String title, Rule rule, Mappool mappool) {
 		this.logger = Logger.getLogger();
@@ -37,10 +43,13 @@ public class RefBot extends Thread {
 		this.playerState = new HashMap<String, Integer>();
 		this.points = new int[rule.getPlayers().length];
 		this.commandHandler = new BotCommandHandler(this);
+		this.rollHandler = new RollHandler(this);
 		this.totalBans = 0;
 		this.mappool = mappool;
 		this.lobby.addLobbyHandler(commandHandler);
 		this.presentPlayers = new String[rule.getPlayers().length][];
+		this.validRoll = new boolean[presentPlayers.length];
+		this.rolls = new int[presentPlayers.length];
 
 		this.remainingPicks = new HashSet<String>();
 		for (String map : mappool.getShortMapNames().keySet()) {
@@ -48,8 +57,9 @@ public class RefBot extends Thread {
 		}
 
 		for (int i = 0; i < rule.getPlayers().length; i++) {
+			rolls[i] = -1;
 			for (String player : rule.getPlayers()[i]) {
-				playerTeam.put(player, i);
+				this.playerTeam.put(player, i);
 			}
 		}
 	}
@@ -58,7 +68,8 @@ public class RefBot extends Thread {
 	public void run() {
 		setUp();
 		invitePlayers();
-		waitForReadyup();
+		waitForReadyUp();
+		getRolls();
 		startMatch();
 	}
 
@@ -85,16 +96,17 @@ public class RefBot extends Thread {
 		lobby.flush();
 	}
 
-	private void waitForReadyup() {
+	private void waitForReadyUp() {
 		commandHandler.setBotCommand(BotCommand.READY);
 		commandHandler.setWaitingToStart(true);
+		lobby.message("When all team members are here everyone type \"!ready\".");
+		lobby.flush();
 		thisWait();
 		commandHandler.setBotCommand(null);
 		commandHandler.setWaitingToStart(false);
 	}
 
 	public boolean allReady() {
-		System.out.println("Check Ready");
 		int[] teamSize = new int[rule.getPlayers().length];
 		boolean flag = true;
 		for (String player : lobby.getPlayerSlots().keySet()) {
@@ -126,6 +138,46 @@ public class RefBot extends Thread {
 		return flag;
 	}
 
+	public String[][] getPresentPlayers() {
+		return presentPlayers;
+	}
+
+	private void getRolls() {
+		lobby.addLobbyHandler(rollHandler, 0);
+		lobby.message("Captains, please roll (!roll).");
+		lobby.flush();
+		thisWait();
+		lobby.removeLobbyHanlder(rollHandler);
+		System.out.println(rolls[0] + " " + rolls[1]);
+	}
+
+	public void setValidRoll(String player) {
+		validRoll[playerTeam.get(player)] = true;
+	}
+
+	public boolean getValidRoll(String player) {
+		return validRoll[playerTeam.get(player)];
+	}
+
+	public void setRoll(String player, int roll) {
+		rolls[playerTeam.get(player)] = roll;
+	}
+
+	public boolean hasRolled(String player) {
+		return rolls[playerTeam.get(player)] != -1;
+	}
+
+	public boolean allRolls() {
+		boolean allRolled = true;
+		for (int i : rolls) {
+			if (i == -1) {
+				allRolled = false;
+				break;
+			}
+		}
+		return allRolled;
+	}
+
 	private void startMatch() {
 		banPhase();
 		pickPhase();
@@ -135,6 +187,7 @@ public class RefBot extends Thread {
 		commandHandler.setBotCommand(BotCommand.BAN);
 		while (totalBans < rule.getNumBans() * rule.getPlayers().length) {
 			lobby.message(getWhoIsBanning() + " Pick your ban.");
+			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			thisWait();
 			// Change who is banning
@@ -149,6 +202,7 @@ public class RefBot extends Thread {
 		while (whoWon == -1) {
 			commandHandler.setBotCommand(BotCommand.PICK);
 			lobby.message(getWhoIsPicking() + " pick your song");
+			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			// Wait for the song to be chosen
 			thisWait();
@@ -185,7 +239,6 @@ public class RefBot extends Thread {
 			lobby.message("Failed to ban <" + map + ">");
 			lobby.message("Either map doesn't exist or has been picked already");
 		}
-		lobby.message("Remaining songs: " + getRemainingPicks());
 		lobby.flush();
 	}
 
@@ -223,14 +276,14 @@ public class RefBot extends Thread {
 	private int processScores() {
 		int team = 0;
 		int[] scores = getScores();
-		lobby.message("Score " + 0 + " - " + scores[0]);
+		lobby.message("Score: " + rule.getTeamNames()[0] + " - " + scores[0]);
 		for (int i = 1; i < scores.length; i++) {
-			lobby.message("Score " + i + " - " + scores[i]);
+			lobby.message("Score " + rule.getTeamNames()[i] + " - " + scores[i]);
 			if (scores[team] < scores[i]) {
 				team = i;
 			}
 		}
-		lobby.message("Team " + team + " has won the point.");
+		lobby.message("Team " + rule.getTeamNames()[team] + " has won the point.");
 		lobby.flush();
 		points[team]++;
 		if (points[team] >= rule.getFirstTo()) {
@@ -244,13 +297,13 @@ public class RefBot extends Thread {
 		int[] scores = new int[rule.getPlayers().length];
 		int[] playerCount = new int[scores.length];
 		for (String player : lobby.getPlayerScores().keySet()) {
-			int team = playerTeam.get(player);
+			int team = playerTeam.get(player.toLowerCase());
 			scores[team] += lobby.getPlayerScores().get(player);
 			playerCount[team]++;
 		}
 		for (int i = 0; i < playerCount.length; i++) {
 			if (playerCount[i] > rule.getTeamSize()) {
-				logger.println(this, "Team " + i + " played with too many players");
+				logger.println(this, "Team: " + rule.getTeamNames()[i] + " played with too many players");
 			}
 		}
 		return scores;
