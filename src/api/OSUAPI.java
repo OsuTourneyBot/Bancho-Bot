@@ -3,7 +3,7 @@ package api;
 import java.io.IOException;
 import org.json.JSONObject;
 
-public class APIToken {
+public class OSUAPI {
 
 	private static JSONObject parent = new JSONObject();
 	private static JSONObject obj = new JSONObject();
@@ -18,7 +18,7 @@ public class APIToken {
 	 * @param ClientSecret The Client Secret Gotten from OSU API
 	 * @throws IOException
 	 */
-	public APIToken(int Clientid, String ClientSecret) {
+	public OSUAPI(int Clientid, String ClientSecret) {
 		// All of our info, creating
 		obj.put("client_id", Clientid);
 		obj.put("client_secret", ClientSecret);
