@@ -16,5 +16,5 @@
 	"scoreMode":3,
 	"pickTime":60,
 	"banTime":60,
-	"warmup":true
+	"warmUp":true
 }

@@ -7,11 +7,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="Libraries/annotations-13.0.jar"/>
-	<classpathentry kind="lib" path="Libraries/json-20201115.jar"/>
 	<classpathentry kind="lib" path="Libraries/kotlin-stdlib-1.4.10.jar"/>
 	<classpathentry kind="lib" path="Libraries/kotlin-stdlib-common-1.4.10.jar"/>
 	<classpathentry kind="lib" path="Libraries/okhttp-4.10.0-RC1.jar"/>
 	<classpathentry kind="lib" path="Libraries/okio-2.9.0.jar"/>
-	<classpathentry kind="lib" path="Libraries/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="Libraries/json-20201115.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
