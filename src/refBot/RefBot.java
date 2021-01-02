@@ -144,11 +144,20 @@ public class RefBot extends Thread {
 
 	private void getRolls() {
 		lobby.addLobbyHandler(rollHandler, 0);
-		lobby.message("Captains, please roll (!roll).");
+		lobby.message("Captains, please roll \"!roll\".");
 		lobby.flush();
 		thisWait();
 		lobby.removeLobbyHanlder(rollHandler);
-		System.out.println(rolls[0] + " " + rolls[1]);
+		if (rolls[0] > rolls[1]) {
+			whosBan = 0;
+			whosPick = 1;
+		} else {
+			whosBan = 1;
+			whosPick = 0;
+		}
+		lobby.message(presentPlayers[whosBan][0] + " is banning first.");
+		lobby.message(presentPlayers[whosPick][0] + " is picking first.");
+		lobby.flush();
 	}
 
 	public void setValidRoll(String player) {
@@ -186,7 +195,7 @@ public class RefBot extends Thread {
 	private void banPhase() {
 		commandHandler.setBotCommand(BotCommand.BAN);
 		while (totalBans < rule.getNumBans() * rule.getPlayers().length) {
-			lobby.message(getWhoIsBanning() + " Pick your ban.");
+			lobby.message(getWhoIsBanning() + " Pick your ban \"!ban <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			thisWait();
@@ -201,7 +210,7 @@ public class RefBot extends Thread {
 		int whoWon = -1;
 		while (whoWon == -1) {
 			commandHandler.setBotCommand(BotCommand.PICK);
-			lobby.message(getWhoIsPicking() + " pick your song");
+			lobby.message(getWhoIsPicking() + " pick your song \"!pick <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			// Wait for the song to be chosen
@@ -214,7 +223,7 @@ public class RefBot extends Thread {
 			// Change who is picking
 			whosPick = (whosPick + 1) % rule.getPlayers().length;
 		}
-		lobby.message("Team " + whoWon + " has won");
+		lobby.message("Team " + rule.getTeamNames()[whoWon] + " has won");
 		lobby.flush();
 	}
 
