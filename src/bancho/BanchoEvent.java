@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 public enum BanchoEvent {
 	TIMER_FINISH("Countdown finished"), ALL_READY("All players are ready"),
 	MAP_SELECTED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) .*"), MAP_FINISH("The match has finished!"),
-	READY_OR_TIMER("(?:Countdown finished|All players are ready)");
+	READY_OR_TIMER("(?:Countdown finished|All players are ready)"), PLAYER_JOIN("(.+) joined in slot ([0-9]+)\\."),
+	PLAYER_MOVE("(.+) moved to slot ([0-9]+)"), PLAYER_LEAVE("(.+) left the game\\.");
 
 	private final Pattern pattern;
 
