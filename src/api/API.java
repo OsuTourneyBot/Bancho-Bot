@@ -32,73 +32,57 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class API
-{
+public class API {
 	// OkHttp
 	static OkHttpClient client = new OkHttpClient();
 
-	static String GET(String url) throws IOException {
-	  Request request = new Request.Builder()
-	      .url(url)
-	      .build();
+	/**
+	 * precon Len(Header) == Len(Body) Method for setting up get Calls for a API
+	 * 
+	 * @param url     The URL your trying to call
+	 * @param headers A List of the header titles
+	 * @param bodies   A list of the header bodys
+	 * @return String of file
+	 * @throws IOException
+	 */
+	static String GET(String url, String[] headers, String[] bodies) throws IOException {
 
-	  try (Response response = client.newCall(request).execute()) {
-	    return response.body().string();
-	  }
-	}
-	
-	public static final MediaType JSON
-			= MediaType.get("application/json; charset=utf-8");
+		Request.Builder builder = new Request.Builder().url(url);
+		for (int i = 0; i < headers.length; i++) {
+			builder = builder.addHeader(headers[i], bodies[i]);
+		}
+		Request request = builder.build();
 
-	
-
-	static String POST(String url, String json) throws IOException {
-		RequestBody body = RequestBody.create(json, JSON);
-		Request request = new Request.Builder().url(url).post(body).build();
 		try (Response response = client.newCall(request).execute()) {
 			return response.body().string();
 		}
 	}
-	
-	public static void main(String[] args) throws IOException
-	{
-		String body = GET("https://jsonplaceholder.typicode.com/albums");
-		System.out.println(body);
-		
-		// parse
-		parse(body);
-		
-		String post = POST("https://7dd1c7548bfe2ad013c39d35f5f60e20.m.pipedream.net/", body);
-		System.out.println(post);
-	}
-	
-	// Time to parse data
-	public static String parse(String responseBody) {
-		JSONArray albums = new JSONArray(responseBody);
-		for (int i = 0; i < albums.length(); i++) {
-			JSONObject album = albums.getJSONObject(i);
 
-			// extract the ID and stuff
-			int id = album.getInt("id"); // no idea if key: is needed
-			int userId = album.getInt("userId");
-			String title = album.getString("title");
+	public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-			System.out.println(id + " " + title + " " + userId);
+	/**
+	 * Makes a POST API call to the given url giving the given JSON
+	 * 
+	 * @param url     The url
+	 * @param json    The JSON to be sent
+	 * @param headers Title of the headers
+	 * @param bodies   Body of the headers
+	 * @return
+	 * @throws IOException
+	 */
+	static String POST(String url, String json, String[] headers, String[] bodies) throws IOException {
+		RequestBody body = RequestBody.create(json, JSON);
+		Request.Builder builder = new Request.Builder().url(url).post(body);
+
+		for (int i = 0; i < headers.length; i++) {
+			builder = builder.addHeader(headers[i], bodies[i]);
 		}
+		Request request = builder.build();
 
-		// modify to add data instead of printing the stuff
-		return null;
+		try (Response response = client.newCall(request).execute()) {
+			return response.body().string();
+		}
 	}
+
+	
 }
-
-
-
-
-
-
-
-
-
-
-
-
