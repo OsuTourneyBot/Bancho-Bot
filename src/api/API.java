@@ -32,69 +32,58 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class API
-{	
+public class API {
 	// OkHttp
 	static OkHttpClient client = new OkHttpClient();
 
-	static String GET(String url) throws IOException {
-	  Request request = new Request.Builder()
-	      .url(url)
-	      .build();
+	/**
+	 * precon Len(Header) == Len(Body) Method for setting up get Calls for a API
+	 * 
+	 * @param url     The URL your trying to call
+	 * @param Headers A List of the header titles
+	 * @param Bodys   A list of the header bodys
+	 * @return String of file
+	 * @throws IOException
+	 */
+	static String GET(String url, String[] Headers, String[] Bodys) throws IOException {
 
-	  try (Response response = client.newCall(request).execute()) {
-	    return response.body().string();
-	  }
-	}
-	
-	static String GET(String url, String Header, String Header2, String body1, String body2) throws IOException {
-		  Request request = new Request.Builder()
-			  .addHeader(Header, body1)
-			  .addHeader(Header2, body2)
-		      .url(url)
-		      .build();
-
-		  try (Response response = client.newCall(request).execute()) {
-		    return response.body().string();
-		  }
+		Request.Builder builder = new Request.Builder().url(url);
+		for (int i = 0; i < Headers.length; i++) {
+			builder = builder.addHeader(Headers[i], Bodys[i]);
 		}
-		
-	
-	public static final MediaType JSON
-			= MediaType.get("application/json; charset=utf-8");
+		Request request = builder.build();
 
-	static String POST(String url, String json, String Header, String Header2, String body1, String body2) throws IOException {
-		RequestBody body = RequestBody.create(json, JSON);
-		Request request = new Request.Builder().url(url).post(body)
-				.addHeader(Header, body1)
-				.addHeader(Header2, body2)
-				.build();
 		try (Response response = client.newCall(request).execute()) {
 			return response.body().string();
 		}
 	}
 
-	static String POST(String url, String json) throws IOException {
+	public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+	/**
+	 * Makes a POST API call to the given url giving the given JSON
+	 * 
+	 * @param url     The url
+	 * @param json    The JSON to be sent
+	 * @param Headers Title of the headers
+	 * @param bodys   Body of the headers
+	 * @return
+	 * @throws IOException
+	 */
+	static String POST(String url, String json, String[] Headers, String[] bodys) throws IOException {
 		RequestBody body = RequestBody.create(json, JSON);
-		Request request = new Request.Builder().url(url).post(body).build();
+		Request.Builder builder = new Request.Builder().url(url).post(body);
+
+		for (int i = 0; i < Headers.length; i++) {
+			builder = builder.addHeader(Headers[i], bodys[i]);
+		}
+		Request request = builder.build();
+
 		try (Response response = client.newCall(request).execute()) {
 			return response.body().string();
 		}
 	}
-	
-	
-	public static void main(String[] args) throws IOException
-	{
-		String body = GET("https://jsonplaceholder.typicode.com/albums");
-		System.out.println(body);
-		
-		// parse
-		parse(body);
-		
-		String post = POST("https://7dd1c7548bfe2ad013c39d35f5f60e20.m.pipedream.net/", body);
-		System.out.println(post);
-	}
-	
+
 	// Time to parse data
 	public static String parse(String responseBody) {
 		JSONArray albums = new JSONArray(responseBody);
@@ -113,15 +102,3 @@ public class API
 		return null;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
