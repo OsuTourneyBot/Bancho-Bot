@@ -68,10 +68,6 @@ public class OSUAPI {
 		String[] body = new String[] { bearer, "application/json" };
 		String stringBody = API.GET("https://osu.ppy.sh/api/v2/beatmaps/" + id, header, body);
 		JSONObject data = new JSONObject(stringBody);
-		if (!data.has("beatmapset") || !data.getJSONObject("beatmapset").has("id")
-				|| data.getJSONObject("beatmapset").getInt("id") != id) {
-			System.err.println("Something went wrong when getting beatmap data.");
-		}
 		return data;
 	}
 
