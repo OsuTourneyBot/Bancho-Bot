@@ -1,9 +1,8 @@
 package api;
 
 import java.io.IOException;
-import org.json.JSONObject;
 
-import logger.Logger;
+import org.json.JSONObject;
 
 public class OSUAPI {
 
@@ -20,7 +19,7 @@ public class OSUAPI {
 	 * @param ClientSecret The Client Secret Gotten from OSU API
 	 * @throws IOException
 	 */
-	public OSUAPI(int Clientid, String ClientSecret) {
+	public static void setCredentials(int Clientid, String ClientSecret) {
 		// All of our info, creating
 		obj.put("client_id", Clientid);
 		obj.put("client_secret", ClientSecret);
