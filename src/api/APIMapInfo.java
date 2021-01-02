@@ -13,7 +13,7 @@ public class APIMapInfo {
 	int Length;
 	String Mode;
 	private String AccessString;
-	private JSONObject Parent;
+	private String[] Parent;
 	
 	URL beatmapLink;
 	/**
@@ -24,65 +24,34 @@ public class APIMapInfo {
 	 */
 	public APIMapInfo(String link, APIToken token) throws IOException {
 	// Get API token
-	JSONObject codes = token.pullData();
-	AccessString = codes.getString("access_token");
 	
-	//make header of CAll into correct format.
-	//set up URL
-	beatmapLink = new URL(link);
-	HttpURLConnection con = (HttpURLConnection) beatmapLink.openConnection();
-	
-	
-	con.setRequestMethod("GET");
-	con.setRequestProperty("Authorization", "Bearer "+ AccessString);
-	con.setDoOutput(true);
-	con.setRequestProperty("Accept", "application/json");
-	
-	
-	int responseCode = con.getResponseCode();
-	if (responseCode == HttpURLConnection.HTTP_OK) // successful connection
-	{	
-		//Reading Data and putting it back into a JSON.
-		StringBuilder sb = new StringBuilder();  
-		BufferedReader br = new BufferedReader(
-	            new InputStreamReader(con.getInputStream(), "utf-8"));
-	    String line = null;  
-	    while ((line = br.readLine()) != null) {  
-	        sb.append(line + "\n");  
-		}
-	    System.out.print(sb);
-	    br.close();
-	    
-	    //JSON object that holds everything
-	 	Parent = new JSONObject(sb.toString());}
-	
-	else { //Unsuccessful connection 
+	if  (token.isExpired()){
+		token.GenerateCode();
 		
-		//If the token is expired renew it
-		if (token.isExpired()) {
-			System.out.print("The Token has expired. Requesting a new one....");
-			token.GenerateCode();
-			
-		}
-		else {
-			// Else its some other problem we cant fix it.
-			System.out.print("The URL that you have inputed is invalid");
-			
-		}
 	}
-	   }
+	else {
+		String AccessString = token.pullData();
+		String Bearer = "Bearer " + AccessString;
+		String body = API.GET(link, "Authorization","Accept", Bearer , "application/json");
+		Parent = body.split(",");
+	}	
+	
+	}
 	
 	public String GetTitle() {
-		return Parent.getString("title");
+		return Parent[43].split(":")[1];
 	}
 	
 	public Object GetID() {
-		return Parent.get("id");
+		return Parent[1].split(":")[1];
 	}
 	
 	public String GetLength() {
-		return Parent.getString("total_length");
+		return Parent[3].split(":")[1];
+	}
+	public String GetMode() {
+		return Parent[2].split(":")[1];
 	}
 	
-	}
+}
 
