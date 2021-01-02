@@ -18,7 +18,6 @@ public class BanchoEventHandler implements IRCEventHandler {
 
 	@Override
 	public String[] match(String[] data) {
-		System.out.println(data[0]);
 		return event == null ? null : event.getMatch(data[0]);
 	}
 
