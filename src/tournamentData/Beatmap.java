@@ -8,13 +8,11 @@ public class Beatmap
 	private int mod;
 	private boolean freeMod;
 	
-	public Beatmap(int ID, String link, int mod, boolean freeMod)
+	public Beatmap(int ID, int mod, boolean freeMod)
 	{
 		this.ID = ID;
-		this.link = link;
 		this.mod = mod;
 		this.freeMod = freeMod;
-		
 	}
 
 	// getters
