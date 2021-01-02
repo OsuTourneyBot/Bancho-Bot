@@ -1,10 +1,8 @@
 package refBot;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import bancho.BanchoBot;
 import bancho.LobbyHandler;
@@ -34,6 +32,7 @@ public class RefBot extends Thread {
 	private String[][] presentPlayers;
 	private boolean[] validRoll;
 	private int[] rolls;
+	private ArrayList<String> tiebreaker;
 
 	public RefBot(BanchoBot bot, String title, Rule rule, Mappool mappool) {
 		this.logger = Logger.getLogger();
@@ -50,10 +49,19 @@ public class RefBot extends Thread {
 		this.presentPlayers = new String[rule.getPlayers().length][];
 		this.validRoll = new boolean[presentPlayers.length];
 		this.rolls = new int[presentPlayers.length];
+		this.tiebreaker = new ArrayList<String>();
 
 		this.remainingPicks = new HashSet<String>();
 		for (String map : mappool.getShortMapNames().keySet()) {
 			remainingPicks.add(map);
+		}
+
+		// Remove tiebreaker maps from the pool
+		for (String map : rule.getTieBreaker()) {
+			if (remainingPicks.contains(map)) {
+				remainingPicks.remove(map);
+				tiebreaker.add(map);
+			}
 		}
 
 		for (int i = 0; i < rule.getPlayers().length; i++) {
@@ -108,14 +116,18 @@ public class RefBot extends Thread {
 
 	public boolean allReady() {
 		int[] teamSize = new int[rule.getPlayers().length];
+		int totalPlayers = 0;
+		int readyPlayers = 0;
 		boolean flag = true;
 		for (String player : lobby.getPlayerSlots().keySet()) {
 			if (playerTeam.containsKey(player)) {
 				teamSize[playerTeam.get(player)]++;
-			}
-			if (!playerState.containsKey(player) || playerState.get(player) != 1) {
-				flag = false;
-				break;
+				totalPlayers++;
+				if (playerState.containsKey(player) && playerState.get(player) == 1) {
+					readyPlayers++;
+				} else {
+					flag = false;
+				}
 			}
 		}
 		for (int i : teamSize) {
@@ -135,6 +147,8 @@ public class RefBot extends Thread {
 				presentPlayers[team][teamIdx[team]++] = player;
 			}
 		}
+		lobby.message(readyPlayers + "/" + totalPlayers + " ready.");
+		lobby.flush();
 		return flag;
 	}
 
@@ -208,22 +222,36 @@ public class RefBot extends Thread {
 
 	private void pickPhase() {
 		int whoWon = -1;
+		boolean tiebreak = false;
 		while (whoWon == -1) {
-			commandHandler.setBotCommand(BotCommand.PICK);
-			lobby.message(getWhoIsPicking() + " pick your song using \"!pick <map>\".");
-			lobby.message("Remaining songs: " + getRemainingPicks());
-			lobby.flush();
-			// Wait for the song to be chosen
-			thisWait();
-			commandHandler.setBotCommand(null);
+			// Let the players choose the map if it isn't a tiebreaker
+			if (!tiebreak) {
+				commandHandler.setBotCommand(BotCommand.PICK);
+				lobby.message(getWhoIsPicking() + " pick your song using \"!pick <map>\".");
+				lobby.message("Remaining songs: " + getRemainingPicks());
+				lobby.flush();
+				// Wait for the song to be chosen
+				thisWait();
+				commandHandler.setBotCommand(null);
+				// Change who is picking
+				whosPick = (whosPick + 1) % rule.getPlayers().length;
+			} else {
+				lobby.message("Tiebreaker song");
+				lobby.flush();
+				pick(tiebreaker.get(0));
+			}
 			// Start the match
 			setPickedMap();
-			// Process the scores from last map
+			currentPick = null;
+			// Process the scores from last map and display the results
 			whoWon = processScores();
-			// Change who is picking
 			lobby.message(
 					rule.getTeamNames()[0] + " | " + points[0] + "-" + points[1] + " | " + rule.getTeamNames()[1]);
-			whosPick = (whosPick + 1) % rule.getPlayers().length;
+			lobby.flush();
+			// Check to see if we need to tiebreak
+			if (tiebreaker != null && points[0] == rule.getFirstTo() - 1 && points[1] == rule.getFirstTo() - 1) {
+				tiebreak = true;
+			}
 		}
 		lobby.message("Team " + rule.getTeamNames()[whoWon] + " has won");
 		lobby.flush();

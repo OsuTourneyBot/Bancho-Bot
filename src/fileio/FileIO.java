@@ -57,7 +57,7 @@ public class FileIO {
 	 * @param responseBody
 	 * @return rule set
 	 */
-	public static Rule settingParser(String responseBody) {
+	public static Rule ruleParser(String responseBody) {
 		// new builder
 		RuleBuilder builder;
 		// getting the data as a JSONObject
@@ -99,6 +99,13 @@ public class FileIO {
 		if (setting.has("warmUp")) {
 			boolean warmUp = setting.getBoolean("warmUp");
 			builder.warmUp(warmUp);
+		}
+		if (setting.has("tiebreaker")) {
+			String[] tiebreaker = new String[setting.getJSONArray("tiebreaker").length()];
+			for (int i = 0; i < tiebreaker.length; i++) {
+				tiebreaker[i] = setting.getJSONArray("tiebreaker").getString(i);
+			}
+			builder.tieBreaker(tiebreaker);
 		}
 
 		// return rule set
