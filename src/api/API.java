@@ -40,16 +40,16 @@ public class API {
 	 * precon Len(Header) == Len(Body) Method for setting up get Calls for a API
 	 * 
 	 * @param url     The URL your trying to call
-	 * @param Headers A List of the header titles
-	 * @param Bodys   A list of the header bodys
+	 * @param headers A List of the header titles
+	 * @param bodies   A list of the header bodys
 	 * @return String of file
 	 * @throws IOException
 	 */
-	static String GET(String url, String[] Headers, String[] Bodys) throws IOException {
+	static String GET(String url, String[] headers, String[] bodies) throws IOException {
 
 		Request.Builder builder = new Request.Builder().url(url);
-		for (int i = 0; i < Headers.length; i++) {
-			builder = builder.addHeader(Headers[i], Bodys[i]);
+		for (int i = 0; i < headers.length; i++) {
+			builder = builder.addHeader(headers[i], bodies[i]);
 		}
 		Request request = builder.build();
 
@@ -65,17 +65,17 @@ public class API {
 	 * 
 	 * @param url     The url
 	 * @param json    The JSON to be sent
-	 * @param Headers Title of the headers
-	 * @param bodys   Body of the headers
+	 * @param headers Title of the headers
+	 * @param bodies   Body of the headers
 	 * @return
 	 * @throws IOException
 	 */
-	static String POST(String url, String json, String[] Headers, String[] bodys) throws IOException {
+	static String POST(String url, String json, String[] headers, String[] bodies) throws IOException {
 		RequestBody body = RequestBody.create(json, JSON);
 		Request.Builder builder = new Request.Builder().url(url).post(body);
 
-		for (int i = 0; i < Headers.length; i++) {
-			builder = builder.addHeader(Headers[i], bodys[i]);
+		for (int i = 0; i < headers.length; i++) {
+			builder = builder.addHeader(headers[i], bodies[i]);
 		}
 		Request request = builder.build();
 
@@ -84,21 +84,5 @@ public class API {
 		}
 	}
 
-	// Time to parse data
-	public static String parse(String responseBody) {
-		JSONArray albums = new JSONArray(responseBody);
-		for (int i = 0; i < albums.length(); i++) {
-			JSONObject album = albums.getJSONObject(i);
-
-			// extract the ID and stuff
-			int id = album.getInt("id"); // no idea if key: is needed
-			int userId = album.getInt("userId");
-			String title = album.getString("title");
-
-			System.out.println(id + " " + title + " " + userId);
-		}
-
-		// modify to add data instead of printing the stuff
-		return null;
-	}
+	
 }
