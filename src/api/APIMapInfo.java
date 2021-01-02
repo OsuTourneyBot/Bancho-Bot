@@ -26,11 +26,11 @@ public class APIMapInfo {
 			token.GenerateCode();
 		} else {
 			String AccessString = token.pullData();
-			String Bearer = "Bearer " + AccessString;
-			String[] Header = new String[] { "Authorization", "Accept" };
-			String[] Body = new String[] { Bearer, "application/json" };
-			String body = API.GET(link, Header, Body);
-			parent = body.split(",");
+			String bearer = "Bearer " + AccessString;
+			String[] header = new String[] { "Authorization", "Accept" };
+			String[] body = new String[] { bearer, "application/json" };
+			String stringBody = API.GET(link, header, body);
+			parent = stringBody.split(",");
 		}
 	}
 
