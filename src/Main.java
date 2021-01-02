@@ -9,6 +9,7 @@ import bancho.BanchoBot;
 import fileio.Credential_IO;
 import fileio.FileIO;
 import refBot.RefBot;
+import tournamentData.Beatmap;
 import tournamentData.Mappool;
 import tournamentData.Rule;
 
@@ -22,9 +23,13 @@ public class Main {
 
 		int APICredentials = Integer.parseInt(credentials.get("APIID"));
 		String APIKey = credentials.get("APIKey");
-
+		
 		OSUAPI.setCredentials(APICredentials, APIKey);
 
+		Beatmap bm = new Beatmap(365060, -1, false);
+		System.out.println(bm.getLink());
+		System.out.println(bm.getTitle());
+		System.out.println(bm.getFullTitle());
 	}
 
 	public static void testBot(String IRCUsername, String IRCPassword) throws IOException, InterruptedException {
