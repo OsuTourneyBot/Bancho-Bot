@@ -3,11 +3,13 @@ package api;
 import java.io.IOException;
 import org.json.JSONObject;
 
+import logger.Logger;
+
 public class OSUAPI {
 
 	private static JSONObject parent = new JSONObject();
 	private static JSONObject obj = new JSONObject();
-	private static String tokenCodes;
+	private static String tokenCodes = null;
 	private static long initiatedTime;
 	private static int expiraryTime;
 
@@ -56,16 +58,19 @@ public class OSUAPI {
 		String[] Header = new String[] { "Accept", "Content-Type" };
 		String[] Body = new String[] { "application/json", "application/json ;charset=UTF-8" };
 		String body = API.POST("https://osu.ppy.sh/oauth/token", obj.toString(), Header, Body);
-		String[] number = body.split(",");
-		String expirary = number[1].split(":")[1];
-		expiraryTime = Integer.parseInt(expirary);
-		tokenCodes = number[2].split(":")[1].substring(1, number[2].split(":")[1].length() - 1);
-		initiatedTime = System.currentTimeMillis();
+		JSONObject bodyJSON = new JSONObject(body);
+		if (bodyJSON.getString("token_type").equals("Bearer")) {
+			initiatedTime = System.currentTimeMillis();
+			expiraryTime = bodyJSON.getInt("expires_in");
+			tokenCodes = bodyJSON.getString("access_token");
+		} else {
+			System.err.println("Invalid API key");
+		}
 
 	}
 
 	public static JSONObject APIMapInfo(int id) throws IOException {
-		if (isExpired()) {
+		if (tokenCodes == null || isExpired()) {
 			GenerateCode();
 		}
 		String AccessString = pullData();
