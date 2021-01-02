@@ -1,21 +1,16 @@
 package api;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.json.JSONObject;
 
-public class APIToken {
+public class OSUAPI {
 
 	private static JSONObject parent = new JSONObject();
-	JSONObject obj = new JSONObject();
-	private static String tokenCodes;
-	long initiatedTime;
-	int expiraryTime;
+	private static JSONObject obj = new JSONObject();
+	private static String tokenCodes = null;
+	private static long initiatedTime;
+	private static int expiraryTime;
 
 	/**
 	 * The constructor for trying to get an API Token.
@@ -24,7 +19,7 @@ public class APIToken {
 	 * @param ClientSecret The Client Secret Gotten from OSU API
 	 * @throws IOException
 	 */
-	public APIToken(int Clientid, String ClientSecret) {
+	public static void setCredentials(int Clientid, String ClientSecret) {
 		// All of our info, creating
 		obj.put("client_id", Clientid);
 		obj.put("client_secret", ClientSecret);
@@ -35,22 +30,12 @@ public class APIToken {
 	}
 
 	/**
-	 * Returns the Tokens.
-	 * 
-	 * @return JSON Object containing the token.
-	 */
-	public String pullData() {
-		return tokenCodes;
-	}
-
-	/**
 	 * Checks if the current token is expired
 	 * 
 	 * @return True if Expired, False if not expired.
 	 */
-	public boolean isExpired() {
+	private static boolean isExpired() {
 		return ((initiatedTime + (1000 * expiraryTime) <= System.currentTimeMillis()));
-
 	}
 
 	/**
@@ -59,16 +44,31 @@ public class APIToken {
 	 * 
 	 * @throws IOException
 	 */
-	public void GenerateCode() throws IOException {
+	private static void GenerateCode() throws IOException {
 		String[] Header = new String[] { "Accept", "Content-Type" };
 		String[] Body = new String[] { "application/json", "application/json ;charset=UTF-8" };
 		String body = API.POST("https://osu.ppy.sh/oauth/token", obj.toString(), Header, Body);
-		String[] number = body.split(",");
-		String expirary = number[1].split(":")[1];
-		expiraryTime = Integer.parseInt(expirary);
-		tokenCodes = number[2].split(":")[1].substring(1, number[2].split(":")[1].length() - 1);
-		initiatedTime = System.currentTimeMillis();
+		JSONObject bodyJSON = new JSONObject(body);
+		if (bodyJSON.getString("token_type").equals("Bearer")) {
+			initiatedTime = System.currentTimeMillis();
+			expiraryTime = bodyJSON.getInt("expires_in");
+			tokenCodes = bodyJSON.getString("access_token");
+		} else {
+			System.err.println("Invalid API key.");
+		}
 
+	}
+
+	public static JSONObject APIMapInfo(int id) throws IOException {
+		if (tokenCodes == null || isExpired()) {
+			GenerateCode();
+		}
+		String bearer = "Bearer " + tokenCodes;
+		String[] header = new String[] { "Authorization", "Accept" };
+		String[] body = new String[] { bearer, "application/json" };
+		String stringBody = API.GET("https://osu.ppy.sh/api/v2/beatmaps/" + id, header, body);
+		JSONObject data = new JSONObject(stringBody);
+		return data;
 	}
 
 }

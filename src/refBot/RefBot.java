@@ -144,11 +144,20 @@ public class RefBot extends Thread {
 
 	private void getRolls() {
 		lobby.addLobbyHandler(rollHandler, 0);
-		lobby.message("Captains, please roll (!roll).");
+		lobby.message("Captains, please roll \"!roll\".");
 		lobby.flush();
 		thisWait();
 		lobby.removeLobbyHanlder(rollHandler);
-		System.out.println(rolls[0] + " " + rolls[1]);
+		if (rolls[0] > rolls[1]) {
+			whosBan = 0;
+			whosPick = 1;
+		} else {
+			whosBan = 1;
+			whosPick = 0;
+		}
+		lobby.message(presentPlayers[whosBan][0] + " is banning first.");
+		lobby.message(presentPlayers[whosPick][0] + " is picking first.");
+		lobby.flush();
 	}
 
 	public void setValidRoll(String player) {
@@ -186,7 +195,7 @@ public class RefBot extends Thread {
 	private void banPhase() {
 		commandHandler.setBotCommand(BotCommand.BAN);
 		while (totalBans < rule.getNumBans() * rule.getPlayers().length) {
-			lobby.message(getWhoIsBanning() + " Pick your ban.");
+			lobby.message(getWhoIsBanning() + " Pick your ban using \"!ban <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			thisWait();
@@ -201,7 +210,7 @@ public class RefBot extends Thread {
 		int whoWon = -1;
 		while (whoWon == -1) {
 			commandHandler.setBotCommand(BotCommand.PICK);
-			lobby.message(getWhoIsPicking() + " pick your song");
+			lobby.message(getWhoIsPicking() + " pick your song using \"!pick <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
 			lobby.flush();
 			// Wait for the song to be chosen
@@ -212,9 +221,11 @@ public class RefBot extends Thread {
 			// Process the scores from last map
 			whoWon = processScores();
 			// Change who is picking
+			lobby.message(
+					rule.getTeamNames()[0] + " | " + points[0] + "-" + points[1] + " | " + rule.getTeamNames()[1]);
 			whosPick = (whosPick + 1) % rule.getPlayers().length;
 		}
-		lobby.message("Team " + whoWon + " has won");
+		lobby.message("Team " + rule.getTeamNames()[whoWon] + " has won");
 		lobby.flush();
 	}
 
@@ -231,7 +242,7 @@ public class RefBot extends Thread {
 			remainingPicks.remove(map);
 			totalBans++;
 			lobby.message("Ban [" + mappool.getShortMapName(map).getLink() + " " + map + "]: "
-					+ mappool.getShortMapName(map).getTitle());
+					+ mappool.getShortMapName(map).getFullTitle());
 			synchronized (this) {
 				this.notify();
 			}
@@ -245,7 +256,7 @@ public class RefBot extends Thread {
 	void pick(String map) {
 		if (remainingPicks.contains(map)) {
 			lobby.message("Picked [" + mappool.getShortMapName(map).getLink() + " " + map + "]: "
-					+ mappool.getShortMapName(map).getTitle());
+					+ mappool.getShortMapName(map).getFullTitle());
 			lobby.flush();
 
 			remainingPicks.remove(map);
@@ -278,7 +289,7 @@ public class RefBot extends Thread {
 		int[] scores = getScores();
 		lobby.message("Score: " + rule.getTeamNames()[0] + " - " + scores[0]);
 		for (int i = 1; i < scores.length; i++) {
-			lobby.message("Score " + rule.getTeamNames()[i] + " - " + scores[i]);
+			lobby.message("Score: " + rule.getTeamNames()[i] + " - " + scores[i]);
 			if (scores[team] < scores[i]) {
 				team = i;
 			}

@@ -1,10 +1,10 @@
 
 {
 	"setName":"Some Ruleset",
-	"firstTo":5,
+	"firstTo":2,
 	"players":[
 		["fungucide"],
-		["AssainPro"]
+		["thenextpenguin"]
 	],
 	"teamSize":1,
 	"numBans":1,
