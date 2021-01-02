@@ -1,0 +1,20 @@
+
+{
+	"setName":"Some Ruleset",
+	"firstTo":5,
+	"players":[
+		["fungucide",
+         "name"
+        ],
+		["AssainPro",
+        "fuck this",
+        "fuck that"]
+	],
+	"teamSize":1,
+	"numBans":1,
+	"teamMode":0,
+	"scoreMode":3,
+	"pickTime":60,
+	"banTime":60,
+	"warmUp":true
+}

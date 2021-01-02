@@ -22,7 +22,6 @@ public class Rule {
 	 * @param builder The builder for this rule set.
 	 */
 	public Rule(RuleBuilder builder) {
-
 		this.warmUp = builder.warmUp;
 		this.readyTime = builder.readyTime;
 		this.pickTime = builder.pickTime;
