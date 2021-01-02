@@ -33,7 +33,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class API
-{
+{	
 	// OkHttp
 	static OkHttpClient client = new OkHttpClient();
 
@@ -47,10 +47,32 @@ public class API
 	  }
 	}
 	
+	static String GET(String url, String Header, String Header2, String body1, String body2) throws IOException {
+		  Request request = new Request.Builder()
+			  .addHeader(Header, body1)
+			  .addHeader(Header2, body2)
+		      .url(url)
+		      .build();
+
+		  try (Response response = client.newCall(request).execute()) {
+		    return response.body().string();
+		  }
+		}
+		
+	
 	public static final MediaType JSON
 			= MediaType.get("application/json; charset=utf-8");
 
-	
+	static String POST(String url, String json, String Header, String Header2, String body1, String body2) throws IOException {
+		RequestBody body = RequestBody.create(json, JSON);
+		Request request = new Request.Builder().url(url).post(body)
+				.addHeader(Header, body1)
+				.addHeader(Header2, body2)
+				.build();
+		try (Response response = client.newCall(request).execute()) {
+			return response.body().string();
+		}
+	}
 
 	static String POST(String url, String json) throws IOException {
 		RequestBody body = RequestBody.create(json, JSON);
@@ -59,6 +81,7 @@ public class API
 			return response.body().string();
 		}
 	}
+	
 	
 	public static void main(String[] args) throws IOException
 	{
