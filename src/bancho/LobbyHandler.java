@@ -122,7 +122,7 @@ public class LobbyHandler {
 	}
 
 	public void waitToStart(int waitTime, int startDelay) {
-		message("Starting map in " + waitTime + " seconds");
+		message("Starting match in " + waitTime + " seconds");
 		message("!mp timer " + waitTime);
 		flush();
 		waitForEvent(BanchoEvent.READY_OR_TIMER);

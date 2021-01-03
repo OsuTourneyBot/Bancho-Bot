@@ -29,7 +29,7 @@ public class Main {
 
 	public static void testBot(String IRCUsername, String IRCPassword) throws IOException, InterruptedException {
 		Mappool pool = FileIO.mapPoolParser(FileIO.readFile("BotTestMP1.json"));
-		Rule rule = FileIO.ruleParser(FileIO.readFile("ExampleRuleset.json"));
+		Rule rule = FileIO.ruleParser(FileIO.readFile("RuleMP1.json"));
 
 		BanchoBot bot = new BanchoBot(IRCUsername, IRCPassword);
 		bot.connect();

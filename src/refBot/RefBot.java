@@ -236,9 +236,9 @@ public class RefBot extends Thread {
 				// Change who is picking
 				whosPick = (whosPick + 1) % rule.getPlayers().length;
 			} else {
-				lobby.message("Tiebreaker song");
-				lobby.flush();
-				pick(tiebreaker.get(0));
+				String tiebreakerID = tiebreaker.get(0);
+				remainingPicks.add(tiebreakerID);
+				pick(tiebreakerID);
 			}
 			// Start the match
 			setPickedMap();
@@ -251,6 +251,11 @@ public class RefBot extends Thread {
 			// Check to see if we need to tiebreak
 			if (tiebreaker != null && points[0] == rule.getFirstTo() - 1 && points[1] == rule.getFirstTo() - 1) {
 				tiebreak = true;
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		lobby.message("Team " + rule.getTeamNames()[whoWon] + " has won");
@@ -315,14 +320,13 @@ public class RefBot extends Thread {
 	private int processScores() {
 		int team = 0;
 		int[] scores = getScores();
-		lobby.message("Score: " + rule.getTeamNames()[0] + " - " + scores[0]);
-		for (int i = 1; i < scores.length; i++) {
-			lobby.message("Score: " + rule.getTeamNames()[i] + " - " + scores[i]);
+		for (int i = 0; i < scores.length; i++) {
+			lobby.message(rule.getTeamNames()[i] + " (Score: " + scores[i] + ")");
 			if (scores[team] < scores[i]) {
 				team = i;
 			}
 		}
-		lobby.message("Team " + rule.getTeamNames()[team] + " has won the point.");
+		lobby.message(rule.getTeamNames()[team] + " has won the point.");
 		lobby.flush();
 		points[team]++;
 		if (points[team] >= rule.getFirstTo()) {

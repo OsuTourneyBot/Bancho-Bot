@@ -9,7 +9,7 @@ import logger.Logger;
 
 public class RateLimitedPrintStream {
 
-	private static final int DELAY = 200;
+	private static final int DELAY = 500;
 
 	private Queue<String> buffer;
 	private PrintStream printStream;
