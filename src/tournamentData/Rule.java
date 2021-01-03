@@ -15,7 +15,7 @@ public class Rule {
 	private int numBans; // optional
 	private boolean warmUp; // optional
 	private int maxWarmupLength; // optional
-	private boolean tieBreaker; // optional
+	private String[] tieBreaker; // optional
 
 	/**
 	 * The actual ruleset that takes in a builder
@@ -95,7 +95,7 @@ public class Rule {
 		return teamMode;
 	}
 
-	public boolean getTieBreaker() {
+	public String[] getTieBreaker() {
 		return tieBreaker;
 	}
 

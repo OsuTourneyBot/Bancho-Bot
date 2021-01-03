@@ -1,0 +1,17 @@
+
+{
+	"setName":"Some Ruleset",
+	"firstTo":2,
+	"players":[
+		["fungucide"],
+		["thenextpenguin"]
+	],
+	"teamSize":1,
+	"numBans":1,
+	"teamMode":0,
+	"scoreMode":3,
+	"pickTime":60,
+	"banTime":60,
+	"warmUp":true,
+	"tiebreaker":["TB"]
+}

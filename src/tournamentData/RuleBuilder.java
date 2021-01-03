@@ -16,7 +16,7 @@ public class RuleBuilder {
 	int banTime = 120; // The time given to ban, default at 120 seconds.
 	boolean warmUp = true; // Check if warmup is enabled true by default.
 	int maxWarmupLength = 300; // The max length of a warmup map, defaults at 300 seconds.
-	boolean tieBreaker = false;
+	String[] tieBreaker = null;
 
 	/**
 	 * Constructor for the rule builder
@@ -29,8 +29,8 @@ public class RuleBuilder {
 	 * @param teamMode
 	 * @param scoreMode
 	 */
-	public RuleBuilder(String setName, int firstTo, String[][] players, int teamSize, int numBans,
-			int teamMode, int scoreMode) {
+	public RuleBuilder(String setName, int firstTo, String[][] players, int teamSize, int numBans, int teamMode,
+			int scoreMode) {
 		this.setName = setName;
 		this.teamMode = teamMode;
 		this.scoreMode = scoreMode;
@@ -118,8 +118,10 @@ public class RuleBuilder {
 		return this;
 	}
 
-	public RuleBuilder tieBreaker(boolean tieBreaker) {
-		this.tieBreaker = tieBreaker;
+	public RuleBuilder tieBreaker(String[] tieBreaker) {
+		if (tieBreaker.length != 0) {
+			this.tieBreaker = tieBreaker;
+		}
 		return this;
 	}
 
