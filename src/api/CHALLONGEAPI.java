@@ -21,10 +21,9 @@ public class CHALLONGEAPI {
 		JSONObject tourneyJSON = API.createJSON(titlesJSON, dataJSON);
 		System.out.print(tourneyJSON);
 		String URL = "https://api.challonge.com/v1/tournaments.json";
-		String[] titles = new String[] {"Accept", "Content-Type"};
-		String[] body = new String[] {"application/json","application/json"};
+		String[] empty = new String[0];
 		
-		String info = API.POST(URL, tourneyJSON.toString(),titles , body);
+		String info = API.POST(URL, tourneyJSON.toString(),empty , empty);
 		
 		return info;
 		
@@ -32,7 +31,7 @@ public class CHALLONGEAPI {
 	
 	
 	public static void main(String[] args) throws IOException {
-		System.out.print(CHALLONGEAPI.createTournament("lvEr5HHJHdKXaSZD4tUYAl2QaFAFbtrwlpjTJARS", "Osu_Tourney", false,"swiss"));
+		System.out.println(CHALLONGEAPI.createTournament("Pssw", "Osu_Tourney", false,"swiss"));
 		
 	}
 
