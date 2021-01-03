@@ -78,11 +78,27 @@ public class API {
 			builder = builder.addHeader(headers[i], bodies[i]);
 		}
 		Request request = builder.build();
-
+		
 		try (Response response = client.newCall(request).execute()) {
+			System.out.print(response.code());
 			return response.body().string();
 		}
 	}
+	/**
+	 * pre: Len(titles) == len(body)
+	 * Generates a JSON object with the paramenters of the given name and body
+	 * @param titles The titles of the object
+	 * @param body The objects with each given title
+	 * @return JSON object filled with titles[i]:body[i]
+	 */
+	static JSONObject createJSON(String[] titles, Object[] body) {
+		JSONObject newJSON = new JSONObject();
+		for (int i = 0; i < titles.length; i++) {
+			newJSON.put(titles[i], body[i]);
+		}
+		return newJSON; 
+	}
+
 
 	
 }
