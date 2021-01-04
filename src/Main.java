@@ -33,7 +33,7 @@ public class Main {
 
 		BanchoBot bot = new BanchoBot(IRCUsername, IRCPassword);
 		bot.connect();
-		RefBot ref = new RefBot(bot, "Fungucide's Game", rule, pool);
+		RefBot ref = new RefBot(bot, "OTB", rule, pool);
 		Thread thread = new Thread() {
 			public void run() {
 				Scanner in = new Scanner(System.in);
