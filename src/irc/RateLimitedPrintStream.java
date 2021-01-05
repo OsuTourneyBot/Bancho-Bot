@@ -9,11 +9,13 @@ import logger.Logger;
 
 public class RateLimitedPrintStream {
 
-	private static final int DELAY = 500;
+	private static final long DELAY = 500;
+	private static final long MPS_DELAY = 2000;
 
 	private Queue<String> buffer;
 	private PrintStream printStream;
 	private long lastWrite = System.currentTimeMillis() - DELAY;
+	private int lastNumberOfMessages = 0;
 	private Logger logger;
 
 	private boolean waitingToWrite = false;
@@ -26,7 +28,7 @@ public class RateLimitedPrintStream {
 
 	public void write(String data) {
 		buffer.add(data);
-		logger.println(this,data);
+		logger.println(this, data);
 	}
 
 	public void flush() {
@@ -43,12 +45,14 @@ public class RateLimitedPrintStream {
 					e.printStackTrace();
 				}
 			}
+			lastNumberOfMessages = 0;
 			while (!buffer.isEmpty()) {
 				printStream.println(buffer.poll());
+				lastNumberOfMessages++;
 			}
 			printStream.flush();
 			waitingToWrite = false;
-			lastWrite = System.currentTimeMillis();
+			lastWrite = System.currentTimeMillis() - lastNumberOfMessages * MPS_DELAY;
 		});
 		t.start();
 		try {
