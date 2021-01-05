@@ -34,9 +34,9 @@ public class RefBot extends Thread {
 	private int[] rolls;
 	private ArrayList<String> tiebreaker;
 
-	public RefBot(BanchoBot bot, String title, Rule rule, Mappool mappool) {
+	public RefBot(BanchoBot bot, String acronym, Rule rule, Mappool mappool) {
 		this.logger = Logger.getLogger();
-		this.lobby = bot.makeLobby(title);
+		this.lobby = bot.makeLobby(acronym + ": (" + rule.getTeamNames()[0] + ") vs (" + rule.getTeamNames()[1] + ")");
 		this.rule = rule;
 		this.playerTeam = new HashMap<String, Integer>();
 		this.playerState = new HashMap<String, Integer>();
@@ -146,6 +146,8 @@ public class RefBot extends Thread {
 				int team = playerTeam.get(player);
 				presentPlayers[team][teamIdx[team]++] = player;
 			}
+		} else {
+			lobby.message("When all team members are here everyone type \"!ready\".");
 		}
 		lobby.message(readyPlayers + "/" + totalPlayers + " ready.");
 		lobby.flush();
@@ -202,6 +204,8 @@ public class RefBot extends Thread {
 	}
 
 	private void startMatch() {
+		lobby.message("FT-" + rule.getFirstTo() + " | " + rule.getNumBans() + " ban(s)");
+		lobby.flush();
 		banPhase();
 		pickPhase();
 	}
