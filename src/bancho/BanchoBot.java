@@ -3,6 +3,7 @@ package bancho;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import irc.IRCClient;
 import irc.handlers.IRCEventHandler;
@@ -59,5 +60,21 @@ public class BanchoBot extends IRCClient {
 	public LobbyHandler getLobby(String name) {
 		return lobbies.get(name);
 	}
-	
+
+	public void interactive() {
+		Thread thread = new Thread() {
+			public void run() {
+				Scanner in = new Scanner(System.in);
+				String line;
+				while ((line = in.nextLine()) != null && !line.equals("CLOSE")) {
+					write(line);
+					flush();
+				}
+				for (String name : lobbies.keySet()) {
+					lobbies.get(name).close();
+				}
+			}
+		};
+		thread.start();
+	}
 }

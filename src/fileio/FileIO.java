@@ -8,8 +8,8 @@ import org.json.JSONObject;
 
 import tournamentData.Beatmap;
 import tournamentData.Mappool;
-import tournamentData.Rule;
-import tournamentData.RuleBuilder;
+import tournamentData.Ruleset;
+import tournamentData.RulesetBuilder;
 
 public class FileIO {
 
@@ -51,28 +51,29 @@ public class FileIO {
 		return data;
 	}
 
+	public static Ruleset ruleParser(String body) {
+		return ruleParser(new JSONObject(body));
+	}
+
 	/**
 	 * Builds the rule from the response body from the json file
 	 * 
 	 * @param responseBody
 	 * @return rule set
 	 */
-	public static Rule ruleParser(String responseBody) {
+	public static Ruleset ruleParser(JSONObject body) {
 		// new builder
-		RuleBuilder builder;
-		// getting the data as a JSONObject
-		JSONObject setting = new JSONObject(responseBody);
+		RulesetBuilder builder;
 
 		// setting players and other stuff required for the builder
-		JSONArray players = setting.getJSONArray("players");
+		JSONArray players = body.getJSONArray("players");
 
-		String setName = setting.getString("setName");
-		int firstTo = setting.getInt("firstTo");
+		int firstTo = body.getInt("firstTo");
 		String[][] playersList = new String[players.length()][];
-		int teamSize = setting.getInt("teamSize");
-		int numBans = setting.getInt("numBans");
-		int teamMode = setting.getInt("teamMode");
-		int scoreMode = setting.getInt("scoreMode");
+		int teamSize = body.getInt("teamSize");
+		int numBans = body.getInt("numBans");
+		int teamMode = body.getInt("teamMode");
+		int scoreMode = body.getInt("scoreMode");
 
 		// iterate through the players
 		for (int i = 0; i < players.length(); i++) {
@@ -85,31 +86,31 @@ public class FileIO {
 		}
 
 		// set to the constructor
-		builder = new RuleBuilder(setName, firstTo, playersList, teamSize, numBans, teamMode, scoreMode);
+		builder = new RulesetBuilder(firstTo, playersList, teamSize, numBans, teamMode, scoreMode);
 
 		// check for optional stuff
-		if (setting.has("pickTime")) {
-			int pickTime = setting.getInt("pickTime");
+		if (body.has("pickTime")) {
+			int pickTime = body.getInt("pickTime");
 			builder.pickTime(pickTime);
 		}
-		if (setting.has("banTime")) {
-			int banTime = setting.getInt("banTime");
+		if (body.has("banTime")) {
+			int banTime = body.getInt("banTime");
 			builder.banTime(banTime);
 		}
-		if (setting.has("warmUp")) {
-			boolean warmUp = setting.getBoolean("warmUp");
+		if (body.has("warmUp")) {
+			boolean warmUp = body.getBoolean("warmUp");
 			builder.warmUp(warmUp);
 		}
-		if (setting.has("tiebreaker")) {
-			String[] tiebreaker = new String[setting.getJSONArray("tiebreaker").length()];
+		if (body.has("tiebreaker")) {
+			String[] tiebreaker = new String[body.getJSONArray("tiebreaker").length()];
 			for (int i = 0; i < tiebreaker.length; i++) {
-				tiebreaker[i] = setting.getJSONArray("tiebreaker").getString(i);
+				tiebreaker[i] = body.getJSONArray("tiebreaker").getString(i);
 			}
 			builder.tieBreaker(tiebreaker);
 		}
 
 		// return rule set
-		return new Rule(builder);
+		return new Ruleset(builder);
 	}
 
 	/**
@@ -132,20 +133,23 @@ public class FileIO {
 		return builder;
 	}
 
+	public static Mappool mappoolParser(String map) {
+		return mappoolParser(new JSONObject(map));
+	}
+
 	/**
 	 * this is used to parse the map pool
 	 * 
 	 * @param responseBody
 	 * @return
 	 */
-	public static Mappool mapPoolParser(String responseBody) {
+	public static Mappool mappoolParser(JSONObject body) {
 		// new builder and getting it as a JSON object
 		Mappool builder = new Mappool();
-		JSONObject map = new JSONObject(responseBody);
 
 		// goes through the map names
-		for (String name : map.keySet()) {
-			Beatmap beatmap = mapParser(map.getJSONObject(name));
+		for (String name : body.keySet()) {
+			Beatmap beatmap = mapParser(body.getJSONObject(name));
 			// insert to mappool here
 			builder.insertMap(name, beatmap);
 		}
@@ -156,7 +160,7 @@ public class FileIO {
 
 	// remove later if needed, just here to test if it works
 	public static void main(String[] args) {
-		Mappool map = mapPoolParser(readFile("Super Scuffed Tournament data.json"));
+		Mappool map = mappoolParser(readFile("Super Scuffed Tournament data.json"));
 		System.out.println(map.getSong(1332737).getID());
 
 	}

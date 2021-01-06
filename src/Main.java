@@ -9,7 +9,7 @@ import fileio.FileIO;
 import refBot.RefBot;
 import tournamentData.Beatmap;
 import tournamentData.Mappool;
-import tournamentData.Rule;
+import tournamentData.Ruleset;
 
 public class Main {
 
@@ -28,24 +28,14 @@ public class Main {
 	}
 
 	public static void testBot(String IRCUsername, String IRCPassword) throws IOException, InterruptedException {
-		Mappool pool = FileIO.mapPoolParser(FileIO.readFile("BotTestMP1.json"));
-		Rule rule = FileIO.ruleParser(FileIO.readFile("RuleMP1.json"));
+		Mappool pool = FileIO.mappoolParser(FileIO.readFile("BotTestMP1.json"));
+		Ruleset rule = FileIO.ruleParser(FileIO.readFile("RuleMP1.json"));
 
 		BanchoBot bot = new BanchoBot(IRCUsername, IRCPassword);
 		bot.connect();
-		RefBot ref = new RefBot(bot, "OTB", rule, pool);
-		Thread thread = new Thread() {
-			public void run() {
-				Scanner in = new Scanner(System.in);
-				String line;
-				while ((line = in.nextLine()) != null && !line.equals("CLOSE")) {
-					bot.write(line);
-					bot.flush();
-				}
-				ref.close();
-			}
-		};
-		thread.start();
+		RefBot ref = new RefBot(bot, "OTB: (" + rule.getTeamNames()[0] + ") vs (" + rule.getTeamNames()[1] + ")", rule,
+				pool);
+		bot.interactive();
 		ref.start();
 	}
 
