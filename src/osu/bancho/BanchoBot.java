@@ -1,4 +1,4 @@
-package bancho;
+package osu.bancho;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 import irc.IRCClient;
 import irc.handlers.IRCEventHandler;
+import osu.bancho.event.MatchCreatedListener;
+import osu.lobby.LobbyHandler;
 
 public class BanchoBot extends IRCClient {
 
@@ -14,17 +16,16 @@ public class BanchoBot extends IRCClient {
 	private HashMap<String, LobbyHandler> lobbies;
 
 	public BanchoBot(String username, String password) throws IOException {
-		super("irc.ppy.sh", 6667, username, password);
+		this("irc.ppy.sh", 6667, username, password);
+	}
+
+	public BanchoBot(String address, int port, String username, String password) throws IOException {
+		super(address, port, username, password);
 		lobbies = new HashMap<String, LobbyHandler>();
 	}
 
 	@Override
-	public IRCClient getSelf() {
-		return this;
-	}
-
-	@Override
-	public void connect() throws IOException, InterruptedException {
+	public void connect() throws Exception {
 		super.connect();
 		pmHandlers = new ArrayList<IRCEventHandler>();
 		pmHandlers.add(new BanchoPMHandler());
@@ -36,17 +37,18 @@ public class BanchoBot extends IRCClient {
 	}
 
 	public LobbyHandler makeLobby(String title) {
-		lobbies.put(title, null);
+		MatchCreatedListener listener = new MatchCreatedListener(title);
+		addEventListener(listener);
 		pmBanchoBot("!mp make " + title);
 		flush();
-		synchronized (this) {
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		listener.listen();
+		removeEventListener(listener);
+		if (listener.getId() != null) {
+			lobbies.put(title, listener.getLobbyHandler());
+			return listener.getLobbyHandler();
+		} else {
+			return null;
 		}
-		return lobbies.get(title);
 	}
 
 	public void setLobby(String name, LobbyHandler handler) {
@@ -71,8 +73,9 @@ public class BanchoBot extends IRCClient {
 					flush();
 				}
 				for (String name : lobbies.keySet()) {
-					lobbies.get(name).close();
+					lobbies.get(name).closeLobby();
 				}
+				in.close();
 			}
 		};
 		thread.start();

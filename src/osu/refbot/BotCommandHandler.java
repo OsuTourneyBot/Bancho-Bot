@@ -1,4 +1,4 @@
-package refBot;
+package osu.refbot;
 
 import irc.IRCClient;
 import irc.handlers.IRCEventHandler;

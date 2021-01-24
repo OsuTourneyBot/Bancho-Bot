@@ -1,20 +1,19 @@
 package endpoint;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import org.json.JSONObject;
 
-import api.OSUAPI;
-import bancho.BanchoBot;
 import fileio.Credential_IO;
 import fileio.FileIO;
-import refBot.RefBot;
+import osu.OSUAPI;
+import osu.bancho.BanchoBot;
+import osu.refbot.RefBot;
+import osu.tournamentData.Mappool;
+import osu.tournamentData.Ruleset;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
-import tournamentData.Mappool;
-import tournamentData.Ruleset;
 
 public class Endpoint {
 
@@ -35,7 +34,7 @@ public class Endpoint {
 				response.body("test");
 				return response.body();
 			});
-		} catch (IOException | InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

@@ -5,7 +5,7 @@
  * How to use hashmaps in java
  * https://www.w3schools.com/java/java_hashmap.asp 
  */
-package tournamentData;
+package osu.tournamentData;
 
 import java.util.HashMap;
 

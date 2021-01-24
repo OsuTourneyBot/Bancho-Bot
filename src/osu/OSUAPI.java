@@ -1,8 +1,10 @@
-package api;
+package osu;
 
 import java.io.IOException;
 
 import org.json.JSONObject;
+
+import api.API;
 
 public class OSUAPI {
 

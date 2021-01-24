@@ -1,4 +1,4 @@
-package refBot;
+package osu.refbot;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

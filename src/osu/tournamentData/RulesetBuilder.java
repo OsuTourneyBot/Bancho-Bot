@@ -1,4 +1,4 @@
-package tournamentData;
+package osu.tournamentData;
 
 public class RulesetBuilder {
 

@@ -1,15 +1,16 @@
-package refBot;
+package osu.refbot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import bancho.BanchoBot;
-import bancho.LobbyHandler;
 import logger.Logger;
-import tournamentData.Beatmap;
-import tournamentData.Mappool;
-import tournamentData.Ruleset;
+import osu.bancho.BanchoBot;
+import osu.lobby.LobbyHandler;
+import osu.lobby.event.MultiplayerEvent;
+import osu.tournamentData.Beatmap;
+import osu.tournamentData.Mappool;
+import osu.tournamentData.Ruleset;
 
 public class RefBot extends Thread {
 
@@ -64,6 +65,7 @@ public class RefBot extends Thread {
 			}
 		}
 
+		// Record which player is on which team
 		for (int i = 0; i < rule.getPlayers().length; i++) {
 			rolls[i] = -1;
 			for (String player : rule.getPlayers()[i]) {
@@ -356,9 +358,10 @@ public class RefBot extends Thread {
 	}
 
 	public void close() {
-		lobby.close();
+		lobby.closeLobby();
 	}
 
+	@Deprecated
 	private void thisWait() {
 		synchronized (this) {
 			try {

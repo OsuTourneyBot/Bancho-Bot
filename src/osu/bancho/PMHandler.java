@@ -1,4 +1,4 @@
-package bancho;
+package osu.bancho;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

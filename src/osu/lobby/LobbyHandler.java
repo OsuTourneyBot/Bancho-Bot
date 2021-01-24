@@ -1,19 +1,21 @@
-package bancho;
+package osu.lobby;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import irc.Channel;
 import irc.handlers.IRCEventHandler;
-import tournamentData.Beatmap;
-import tournamentData.Mod;
+import osu.lobby.event.JoinMoveLeaveListener;
+import osu.lobby.event.MultiplayerEvent;
+import osu.tournamentData.Beatmap;
+import osu.tournamentData.Mod;
 
 public class LobbyHandler {
 
 	private Channel channel;
-	private BanchoMessageHandlerGroup banchoHandler;
-	private BanchoEventHandler eventHandler;
+	private LobbyBanchoHandlerGroup banchoHandler;
 	private ScoreHandler scoreHandler;
+	private JoinMoveLeaveListener listener;
 	private Beatmap currentMap;
 
 	private HashMap<String, Integer> playerScores;
@@ -29,13 +31,29 @@ public class LobbyHandler {
 
 		this.playerSlots = new HashMap<String, Integer>();
 
-		this.banchoHandler = new BanchoMessageHandlerGroup(new ArrayList<IRCEventHandler>());
-		this.eventHandler = new BanchoEventHandler(this);
+		this.banchoHandler = new LobbyBanchoHandlerGroup(new ArrayList<IRCEventHandler>());
+		// TODO: do something about this so it can be easily removed later
+		for (MultiplayerEvent event : MultiplayerEvent.values()) {
+			this.banchoHandler.addHandler(event);
+		}
 		this.scoreHandler = new ScoreHandler(this);
-
-		this.banchoHandler.addHandler(eventHandler);
 		this.banchoHandler.addHandler(scoreHandler);
 		addLobbyHandler(banchoHandler);
+
+		listener = new JoinMoveLeaveListener(this);
+		this.channel.getClient().addEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
+		this.channel.getClient().addEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
+		this.channel.getClient().addEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
+	}
+
+	public void close() {
+		this.channel.getClient().removeEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
+		this.channel.getClient().removeEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
+		this.channel.getClient().removeEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
+	}
+
+	public Channel getChannel() {
+		return channel;
 	}
 
 	public void message(String message) {
@@ -46,7 +64,7 @@ public class LobbyHandler {
 		channel.flush();
 	}
 
-	public void close() {
+	public void closeLobby() {
 		message("!mp close");
 		flush();
 	}
@@ -55,24 +73,12 @@ public class LobbyHandler {
 		return currentMap;
 	}
 
-	private void waitForEvent(BanchoEvent event) {
-		eventHandler.setEvent(event);
-		synchronized (this) {
-			try {
-				this.wait(); // pauses the function
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		eventHandler.setEvent(null);
-	}
-
 	public void addLobbyHandler(IRCEventHandler handler) {
 		channel.addHandler(handler);
 	}
-	
-	public void addLobbyHandler(IRCEventHandler handler,int idx) {
-		channel.addHandler(handler,idx);
+
+	public void addLobbyHandler(IRCEventHandler handler, int idx) {
+		channel.addHandler(handler, idx);
 	}
 
 	public boolean removeLobbyHanlder(IRCEventHandler handler) {
@@ -118,14 +124,14 @@ public class LobbyHandler {
 	public void timer(int sec) {
 		message("!mp timer " + sec);
 		flush();
-		waitForEvent(BanchoEvent.TIMER_FINISH);
+		channel.getClient().waitForEvent(MultiplayerEvent.TIMER_FINISH);
 	}
 
 	public void waitToStart(int waitTime, int startDelay) {
 		message("Starting match in " + waitTime + " seconds");
 		message("!mp timer " + waitTime);
 		flush();
-		waitForEvent(BanchoEvent.READY_OR_TIMER);
+		channel.getClient().waitForEvent(MultiplayerEvent.READY_OR_TIMER);
 		startGame(startDelay);
 	}
 
@@ -134,7 +140,7 @@ public class LobbyHandler {
 		playerMods.clear();
 		message("!mp start " + startDelay);
 		flush();
-		waitForEvent(BanchoEvent.MAP_FINISH);
+		channel.getClient().waitForEvent(MultiplayerEvent.MAP_FINISH);
 	}
 
 	public void setMap(Beatmap m) {
@@ -148,7 +154,6 @@ public class LobbyHandler {
 		}
 		message("!mp map " + m.getID());
 		flush();
-		waitForEvent(BanchoEvent.MAP_SELECTED);
+		channel.getClient().waitForEvent(MultiplayerEvent.MAP_SELECTED);
 	}
-
 }

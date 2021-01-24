@@ -1,10 +1,10 @@
-package tournamentData;
+package osu.tournamentData;
 
 import java.io.IOException;
 
 import org.json.JSONObject;
 
-import api.OSUAPI;
+import osu.OSUAPI;
 
 public class Beatmap 
 {

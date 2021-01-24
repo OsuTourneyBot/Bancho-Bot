@@ -1,10 +1,13 @@
-package bancho;
+package osu.bancho;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import irc.IRCClient;
+import irc.event.Event;
 import irc.handlers.IRCEventHandler;
+import osu.bancho.event.PMEvent;
+import osu.lobby.LobbyHandler;
 
 public class BanchoPMHandler implements IRCEventHandler {
 
@@ -25,21 +28,17 @@ public class BanchoPMHandler implements IRCEventHandler {
 
 	@Override
 	public boolean handle(String[] data, IRCClient client) {
+		Event event = PMEvent.LOBBY_CREATED.toEvent();
 		Matcher match = createTournement.matcher(data[2]);
 		if (match.matches()) {
-			String name = match.group(2);
-			String id = "mp_"+match.group(1);
-			if (client instanceof BanchoBot) {
-				BanchoBot bot = (BanchoBot) client;
-				if (bot.hasLobby(name)) {
-					bot.setLobby(name, new LobbyHandler(client.getChannel(id)));
-					synchronized (bot) {
-						bot.notify();
-					}
-				}
-				System.out.println(name+" -> "+id);
-			}
+			String title = match.group(2);
+			String id = "mp_" + match.group(1);
+			LobbyHandler lobbyHandler = new LobbyHandler(client.getChannel(id));
+			event.addData("title", title);
+			event.addData("id", id);
+			event.addData("lobbyHandler", lobbyHandler);
 		}
+		client.fireEvent(event);
 		return true;
 	}
 

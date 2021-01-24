@@ -1,13 +1,13 @@
-package bancho;
+package osu.lobby;
 
 import java.util.ArrayList;
 
 import irc.handlers.IRCEventGroup;
 import irc.handlers.IRCEventHandler;
 
-public class BanchoMessageHandlerGroup extends IRCEventGroup {
+public class LobbyBanchoHandlerGroup extends IRCEventGroup {
 
-	public BanchoMessageHandlerGroup(ArrayList<IRCEventHandler> handlers) {
+	public LobbyBanchoHandlerGroup(ArrayList<IRCEventHandler> handlers) {
 		super(handlers);
 	}
 

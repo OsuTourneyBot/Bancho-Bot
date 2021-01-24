@@ -1,4 +1,4 @@
-package tournamentData;
+package osu.tournamentData;
 
 public enum Mod {
 	NoFail(1, "NF"), Easy(2, "EZ"), Hidden(8, "HD"), HardRock(16, "HR"), SuddenDeath(32, "SD"), DoubleTime(64, "DT"),

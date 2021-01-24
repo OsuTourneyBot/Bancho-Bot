@@ -2,8 +2,14 @@ package irc;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import irc.event.Event;
+import irc.event.EventListener;
+import irc.event.EventType;
+import irc.event.IRCEvent;
+import irc.event.WaitForEventListener;
 import irc.handlers.IRCEventHandler;
 
 public class IRCClient {
@@ -15,6 +21,7 @@ public class IRCClient {
 	private boolean connected = false;
 
 	private HashMap<String, Channel> channels;
+	private HashMap<EventType, ArrayList<EventListener>> eventListeners;
 
 	private Socket socket;
 	private RateLimitedPrintStream printStream;
@@ -27,6 +34,7 @@ public class IRCClient {
 		this.password = password;
 
 		this.channels = new HashMap<String, Channel>();
+		this.eventListeners = new HashMap<EventType, ArrayList<EventListener>>();
 	}
 
 	public boolean isConnected() {
@@ -63,33 +71,79 @@ public class IRCClient {
 		messageHandler.addHandler(handler);
 	}
 
-	public IRCClient getSelf() {
-		return this;
+	public void addEventListener(EventListener listener) {
+		addEventListener(listener, listener.getEventType());
 	}
 
-	public void connect() throws IOException, InterruptedException {
+	public void addEventListener(EventListener listener, EventType type) {
+		if (!eventListeners.containsKey(type)) {
+			eventListeners.put(type, new ArrayList<EventListener>());
+		}
+		eventListeners.get(type).add(listener);
+	}
+
+	public void removeEventListener(EventListener listener) {
+		removeEventListener(listener, listener.getEventType());
+	}
+
+	public void removeEventListener(EventListener listener, EventType type) {
+		if (eventListeners.containsKey(type)) {
+			eventListeners.get(type).remove(listener);
+		}
+	}
+
+	public void fireEvent(Event event) {
+		if (eventListeners.containsKey(event.getType())) {
+			for (EventListener listener : eventListeners.get(event.getType())) {
+				listener.trigger(event);
+			}
+		}
+	}
+
+	public Event waitForEvent(EventType eventType) {
+		WaitForEventListener listener = new WaitForEventListener(eventType);
+		addEventListener(listener);
+		listener.listen();
+		return listener.getEvent();
+	}
+
+	public void connect() throws Exception {
 		if (connected) {
 			throw new IOException("IRC Client already connected");
 		}
 		socket = new Socket(adress, port);
 		printStream = new RateLimitedPrintStream(socket.getOutputStream());
-		messageHandler = new MessageHandler(getSelf(), socket.getInputStream());
+		messageHandler = new MessageHandler(this, socket.getInputStream());
 
 		listen();
 		register();
-		synchronized (this) {
-			this.wait();
-		}
 	}
 
 	private void listen() {
 		messageHandler.start();
 	}
 
-	public void register() {
+	private void register() throws Exception {
 		write("PASS " + password);
 		write("NICK " + username);
 		write("USER " + username);
 		flush();
+		Event event = waitForEvent(IRCEvent.REGISTER);
+		System.out.println(((String) event.getData().get("code")));
+		if (((String) event.getData().get("code")).equals("001")) {
+			this.connected = true;
+		} else {
+			throw new Exception("Register Failed");
+		}
+	}
+
+	public void close() {
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
