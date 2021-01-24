@@ -9,14 +9,14 @@ import bancho.LobbyHandler;
 import logger.Logger;
 import tournamentData.Beatmap;
 import tournamentData.Mappool;
-import tournamentData.Rule;
+import tournamentData.Ruleset;
 
 public class RefBot extends Thread {
 
 	private Logger logger;
 
 	private LobbyHandler lobby;
-	private Rule rule;
+	private Ruleset rule;
 	private HashMap<String, Integer> playerTeam;
 	private HashMap<String, Integer> playerState;
 	private int[] points;
@@ -34,9 +34,9 @@ public class RefBot extends Thread {
 	private int[] rolls;
 	private ArrayList<String> tiebreaker;
 
-	public RefBot(BanchoBot bot, String acronym, Rule rule, Mappool mappool) {
+	public RefBot(BanchoBot bot, String matchTitle, Ruleset rule, Mappool mappool) {
 		this.logger = Logger.getLogger();
-		this.lobby = bot.makeLobby(acronym + ": (" + rule.getTeamNames()[0] + ") vs (" + rule.getTeamNames()[1] + ")");
+		this.lobby = bot.makeLobby(matchTitle);
 		this.rule = rule;
 		this.playerTeam = new HashMap<String, Integer>();
 		this.playerState = new HashMap<String, Integer>();
@@ -90,7 +90,6 @@ public class RefBot extends Thread {
 	}
 
 	public void setUp() {
-		lobby.message("!mp password 123456");
 		lobby.message("!mp set " + rule.getTeamMode() + " " + rule.getScoreMode());
 		lobby.flush();
 	}

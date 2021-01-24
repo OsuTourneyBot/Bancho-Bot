@@ -1,8 +1,6 @@
 package tournamentData;
 
-public class Rule {
-
-	private final String ruleSetName; // required
+public class Ruleset {
 
 	private final int firstTo; // how many games to be played
 	private final String[][] players; // The players in this tourney.
@@ -22,14 +20,13 @@ public class Rule {
 	 * 
 	 * @param builder The builder for this rule set.
 	 */
-	public Rule(RuleBuilder builder) {
+	public Ruleset(RulesetBuilder builder) {
 		this.warmUp = builder.warmUp;
 		this.readyTime = builder.readyTime;
 		this.pickTime = builder.pickTime;
 		this.banTime = builder.banTime;
 		this.teamSize = builder.teamSize;
 		this.teamMode = builder.teamMode;
-		this.ruleSetName = builder.setName;
 		this.scoreMode = builder.scoreMode;
 		this.numBans = builder.numBans;
 		this.players = builder.players;
@@ -45,10 +42,6 @@ public class Rule {
 
 	public int getMaxWarmupLength() {
 		return maxWarmupLength;
-	}
-
-	public String getRuleSetName() {
-		return ruleSetName;
 	}
 
 	public int getScoreMode() {

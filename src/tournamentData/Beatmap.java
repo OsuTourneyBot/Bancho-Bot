@@ -39,14 +39,13 @@ public class Beatmap
 			version = jo.getString("version");
 			total_length = jo.getInt("total_length");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	// getters
 	public String getLink() {
-		return url;
+		return url==null?"https://osu.ppy.sh/":url;
 	}
 
 	public int getTotal_length() {

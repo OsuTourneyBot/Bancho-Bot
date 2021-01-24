@@ -1,8 +1,6 @@
 package tournamentData;
 
-public class RuleBuilder {
-
-	final String setName; // required
+public class RulesetBuilder {
 
 	final int firstTo;
 	final String[][] players; // The players in this tourney.
@@ -29,9 +27,7 @@ public class RuleBuilder {
 	 * @param teamMode
 	 * @param scoreMode
 	 */
-	public RuleBuilder(String setName, int firstTo, String[][] players, int teamSize, int numBans, int teamMode,
-			int scoreMode) {
-		this.setName = setName;
+	public RulesetBuilder(int firstTo, String[][] players, int teamSize, int numBans, int teamMode, int scoreMode) {
 		this.teamMode = teamMode;
 		this.scoreMode = scoreMode;
 		this.firstTo = firstTo;
@@ -47,7 +43,7 @@ public class RuleBuilder {
 	 * @param cond
 	 * @return
 	 */
-	public RuleBuilder scoreMode(int cond) {
+	public RulesetBuilder scoreMode(int cond) {
 		this.scoreMode = cond;
 		return this;
 	}
@@ -58,7 +54,7 @@ public class RuleBuilder {
 	 * @param time Time in second for length
 	 * @return
 	 */
-	public RuleBuilder readytime(int time) {
+	public RulesetBuilder readytime(int time) {
 		this.readyTime = time;
 		return this;
 	}
@@ -69,7 +65,7 @@ public class RuleBuilder {
 	 * @param time Time in second for length
 	 * @return
 	 */
-	public RuleBuilder pickTime(int time) {
+	public RulesetBuilder pickTime(int time) {
 		this.pickTime = time;
 		return this;
 	}
@@ -80,7 +76,7 @@ public class RuleBuilder {
 	 * @param time Time in second for length
 	 * @return
 	 */
-	public RuleBuilder banTime(int time) {
+	public RulesetBuilder banTime(int time) {
 		this.banTime = time;
 		return this;
 	}
@@ -91,7 +87,7 @@ public class RuleBuilder {
 	 * @param bool True for yes, false for no.
 	 * @return
 	 */
-	public RuleBuilder warmUp(boolean bool) {
+	public RulesetBuilder warmUp(boolean bool) {
 		this.warmUp = bool;
 		return this;
 	}
@@ -102,7 +98,7 @@ public class RuleBuilder {
 	 * @param time time in seconds.
 	 * @return
 	 */
-	public RuleBuilder maxWarmupLength(int time) {
+	public RulesetBuilder maxWarmupLength(int time) {
 		this.maxWarmupLength = time;
 		return this;
 	}
@@ -113,12 +109,12 @@ public class RuleBuilder {
 	 * @param 0 = Head to Head, 1 = Tag Coop, 2 = Team Vs, 3 = Tag Team Vs
 	 * @return
 	 */
-	public RuleBuilder teamMode(int teamMode) {
+	public RulesetBuilder teamMode(int teamMode) {
 		this.teamMode = teamMode;
 		return this;
 	}
 
-	public RuleBuilder tieBreaker(String[] tieBreaker) {
+	public RulesetBuilder tieBreaker(String[] tieBreaker) {
 		if (tieBreaker.length != 0) {
 			this.tieBreaker = tieBreaker;
 		}
@@ -130,8 +126,8 @@ public class RuleBuilder {
 	 * 
 	 * @return
 	 */
-	protected Rule build() {
-		Rule set = new Rule(this);
+	protected Ruleset build() {
+		Ruleset set = new Ruleset(this);
 		return set;
 	}
 
