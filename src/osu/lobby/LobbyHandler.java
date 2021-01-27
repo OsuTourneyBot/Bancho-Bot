@@ -134,7 +134,6 @@ public class LobbyHandler extends Channel {
 		HashMap<String, Object> data = flushWaitForEvent(MultiplayerEvent.MAP_SELECTED).getData();
 		if (data.containsKey("beatmapID")) {
 			int id = Integer.parseInt((String) data.get("beatmapID"));
-			System.out.println(id+" "+m.getID());
 			if (id == m.getID()) {
 				currentMap = m;
 			}
