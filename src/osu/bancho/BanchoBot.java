@@ -52,6 +52,10 @@ public class BanchoBot extends IRCClient {
 
 	public void setLobby(String name, LobbyHandler handler) {
 		lobbies.put(name, handler);
+		if (!channels.containsKey(handler.getName())) {
+			channels.put(handler.getName(), handler);
+			messageHandler.addHandler(handler.getChannelHandler());
+		}
 	}
 
 	public boolean hasLobby(String name) {

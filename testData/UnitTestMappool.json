@@ -1,0 +1,11 @@
+{
+    "NM1":{"ID":365060,"mod":1,"freeMod":false},
+    "NM2":{"ID":1618405,"mod":1,"freeMod":true},
+    "HD1":{"ID":878856,"mod":9,"freeMod":false},
+    "HD2":{"ID":2372049,"mod":9,"freeMod":false},
+    "HR1":{"ID":154370,"mod":17,"freeMod":false},
+    "HR2":{"ID":1144511,"mod":17,"freeMod":false},
+    "DT1":{"ID":1399558 ,"mod":65,"freeMod":false},
+    "DT2":{"ID":1528304,"mod":65,"freeMod":false},
+	"TB":{"ID":202004,"mod":27,"freeMod":true}
+}

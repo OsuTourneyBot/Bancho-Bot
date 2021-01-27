@@ -5,6 +5,9 @@ import java.util.HashMap;
 
 import irc.Channel;
 import irc.IRCClient;
+import irc.event.Event;
+import irc.event.EventType;
+import irc.event.WaitForEventListener;
 import irc.handlers.IRCEventHandler;
 import osu.lobby.event.JoinMoveLeaveListener;
 import osu.lobby.event.MultiplayerEvent;
@@ -41,20 +44,23 @@ public class LobbyHandler extends Channel {
 		addHandler(banchoHandler);
 
 		listener = new JoinMoveLeaveListener(this);
-		getClient().addEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
-		getClient().addEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
-		getClient().addEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
+		addEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
+		addEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
+		addEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
 	}
 
+	@Override
 	public void close() {
-		getClient().removeEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
-		getClient().removeEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
-		getClient().removeEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
+		super.close();
+		removeEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
+		removeEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
+		removeEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
 	}
 
 	public void closeLobby() {
 		message("!mp close");
 		flush();
+		close();
 	}
 
 	public Beatmap getCurrentMap() {
@@ -99,15 +105,13 @@ public class LobbyHandler extends Channel {
 
 	public void timer(int sec) {
 		message("!mp timer " + sec);
-		flush();
-		getClient().waitForEvent(MultiplayerEvent.TIMER_FINISH);
+		flushWaitForEvent(MultiplayerEvent.TIMER_FINISH);
 	}
 
 	public void waitToStart(int waitTime, int startDelay) {
 		message("Starting match in " + waitTime + " seconds");
 		message("!mp timer " + waitTime);
-		flush();
-		getClient().waitForEvent(MultiplayerEvent.READY_OR_TIMER);
+		flushWaitForEvent(MultiplayerEvent.READY_OR_TIMER);
 		startGame(startDelay);
 	}
 
@@ -115,12 +119,10 @@ public class LobbyHandler extends Channel {
 		playerScores.clear();
 		playerMods.clear();
 		message("!mp start " + startDelay);
-		flush();
-		getClient().waitForEvent(MultiplayerEvent.MAP_FINISH);
+		flushWaitForEvent(MultiplayerEvent.MAP_FINISH);
 	}
 
-	public void setMap(Beatmap m) {
-		currentMap = m;
+	public boolean setMap(Beatmap m) {
 		if (m.isFreeMod()) {
 			message("!mp mods Freemod");
 		} else if (m.getMod() == 0) {
@@ -129,7 +131,23 @@ public class LobbyHandler extends Channel {
 			message("!mp mods" + Mod.getNames(m.getMod()));
 		}
 		message("!mp map " + m.getID());
+		HashMap<String, Object> data = flushWaitForEvent(MultiplayerEvent.MAP_SELECTED).getData();
+		if (data.containsKey("beatmapID")) {
+			int id = Integer.parseInt((String) data.get("beatmapID"));
+			System.out.println(id+" "+m.getID());
+			if (id == m.getID()) {
+				currentMap = m;
+			}
+			return id == m.getID();
+		}
+		return false;
+	}
+
+	private Event flushWaitForEvent(EventType eventType) {
+		WaitForEventListener listener = createWaitForEvent(eventType);
 		flush();
-		getClient().waitForEvent(MultiplayerEvent.MAP_SELECTED);
+		listener.listen();
+		removeEventListener(listener);
+		return listener.getEvent();
 	}
 }

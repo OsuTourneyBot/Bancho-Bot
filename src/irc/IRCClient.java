@@ -2,13 +2,10 @@ package irc;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import irc.event.Event;
 import irc.event.EventFireable;
-import irc.event.EventListener;
-import irc.event.EventType;
 import irc.event.IRCEvent;
 import irc.event.JoinEventListener;
 import irc.event.PingEventListener;
@@ -23,11 +20,11 @@ public class IRCClient extends EventFireable {
 	private String password;
 	private boolean connected = false;
 
-	private HashMap<String, Channel> channels;
+	protected HashMap<String, Channel> channels;
 
 	private Socket socket;
 	private RateLimitedPrintStream printStream;
-	private MessageHandler messageHandler;
+	protected MessageHandler messageHandler;
 
 	public IRCClient(String adress, int port, String username, String password) {
 		super();
@@ -56,9 +53,7 @@ public class IRCClient extends EventFireable {
 		}
 		Channel channel = createChannel(name);
 		channels.put(name, channel);
-		messageHandler.addHandler(channel.getChannelHandler());
 		return true;
-
 	}
 
 	public boolean removeChannel(Channel channel) {
@@ -80,6 +75,10 @@ public class IRCClient extends EventFireable {
 
 	public void addEventHandler(IRCEventHandler handler) {
 		messageHandler.addHandler(handler);
+	}
+
+	public void removeEventHandler(IRCEventHandler handler) {
+		messageHandler.removeHanlder(handler);
 	}
 
 	public void connect() throws Exception {

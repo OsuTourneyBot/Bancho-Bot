@@ -11,6 +11,7 @@ import org.junit.rules.Timeout;
 
 import osu.bancho.BanchoBot;
 import osu.lobby.LobbyHandler;
+import osu.tournamentData.Beatmap;
 
 class BanchoTest {
 
@@ -22,6 +23,7 @@ class BanchoTest {
 	private static final String USERNAME = "username";
 	private static final String PASSWORD = "password";
 	private static final String LOBBY_NAME = "test_lobby";
+	private static final String LOBBY_ID = "0123456";
 	private SimpleIRCServer server;
 	private BanchoBot client;
 
@@ -63,9 +65,49 @@ class BanchoTest {
 		String req = server.getMessage();
 		assertEquals("PRIVMSG BanchoBot :!mp make " + LOBBY_NAME, req);
 		server.write(":BanchoBot" + SERVER_NAME + " PRIVMSG " + USERNAME
-				+ " :Created the tournament match https://osu.ppy.sh/mp/0123456 " + LOBBY_NAME);
+				+ " :Created the tournament match https://osu.ppy.sh/mp/" + LOBBY_ID + " " + LOBBY_NAME);
 		String msg = server.getMessage();
-		assertEquals("PRIVMSG #mp_0123456 test message", msg);
+		assertEquals("PRIVMSG #mp_" + LOBBY_ID + " test message", msg);
+	}
+
+	@Test
+	void setMapTest() {
+		connect();
+		new Thread(() -> {
+			client.makeLobby(LOBBY_NAME);
+			LobbyHandler lobby = client.getLobby(LOBBY_NAME);
+			assertNotNull(lobby);
+			// Random map no mod
+			Beatmap b = new Beatmap(987654, 0, false);
+			lobby.setMap(b);
+			assertEquals(b, lobby.getCurrentMap());
+			// Random freemod
+			b = new Beatmap(876543, -1, true);
+			lobby.setMap(b);
+			assertEquals(b, lobby.getCurrentMap());
+			// Random multi mod
+			b = new Beatmap(765432, 9, false);
+			lobby.setMap(b);
+			assertEquals(b, lobby.getCurrentMap());
+		}).start();
+		String req = server.getMessage();
+		assertEquals("PRIVMSG BanchoBot :!mp make " + LOBBY_NAME, req);
+		server.write(":BanchoBot" + SERVER_NAME + " PRIVMSG " + USERNAME
+				+ " :Created the tournament match https://osu.ppy.sh/mp/" + LOBBY_ID + " " + LOBBY_NAME);
+		server.write(":"+SERVER_NAME+" JOIN #mp_"+LOBBY_ID);
+		String prefix = "PRIVMSG #mp_" + LOBBY_ID + " ";
+		String toChannel = ":BanchoBot" + SERVER_NAME + " PRIVMSG #mp_" + LOBBY_ID
+				+ " :Changed beatmap to https://osu.ppy.sh/b/";
+		String[] expected = new String[] { "!mp mods None", "!mp map 987654", "987654 Random_Map1", "!mp mods Freemod",
+				"!mp map 876543", "876543 Random_Map2", "!mp mods NF HD", "!mp map 765432", "765432 Random_Map3" };
+		for (int i = 0; i < expected.length; i++) {
+			if (i % 3 == 2) {
+				server.write(toChannel + expected[i]);
+			} else {
+				assertEquals(prefix + expected[i], server.getMessage());
+			}
+		}
+
 	}
 
 }

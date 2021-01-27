@@ -3,7 +3,6 @@ package osu.lobby.event;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import irc.IRCClient;
 import irc.event.Event;
 import irc.event.EventFireable;
 import irc.event.EventType;
@@ -11,7 +10,7 @@ import irc.handlers.IRCEventHandler;
 
 public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	TIMER_FINISH("Countdown finished"), ALL_READY("All players are ready"),
-	MAP_SELECTED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) .*", new String[] { "beatmapId" }),
+	MAP_SELECTED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) .*", new String[] { "beatmapID" }),
 	MAP_FINISH("The match has finished!"), READY_OR_TIMER("(?:Countdown finished|All players are ready)"),
 	PLAYER_JOIN("(.+) joined in slot ([0-9]+)\\.", new String[] { "player", "slot" }),
 	PLAYER_MOVE("(.+) moved to slot ([0-9]+)", new String[] { "player", "slot" }),

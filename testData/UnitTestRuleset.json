@@ -1,10 +1,10 @@
 
 {
-	"setName":"Some Ruleset",
-	"firstTo":2,
+	"setName":"Unittest Ruleset",
+	"firstTo":3,
 	"players":[
-		["fungucide"],
-		["thenextpenguin"]
+		["user1"],
+		["user2"]
 	],
 	"teamSize":1,
 	"numBans":1,
@@ -12,5 +12,6 @@
 	"scoreMode":3,
 	"pickTime":60,
 	"banTime":60,
-	"warmUp":true
+	"warmUp":true,
+	"tiebreaker":["TB"]
 }

@@ -10,9 +10,8 @@ import irc.handlers.IRCCommandGroup;
 import irc.handlers.IRCEventGroup;
 import irc.handlers.IRCEventHandler;
 import irc.handlers.IgnoreHandler;
-import irc.handlers.JoinChannelHandler;
-import irc.handlers.RegisterHandler;
 import irc.handlers.PingPongHandler;
+import irc.handlers.RegisterHandler;
 import logger.Logger;
 
 public class MessageHandler extends Thread {

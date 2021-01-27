@@ -10,9 +10,14 @@ public class OSUAPI {
 
 	private static JSONObject parent = new JSONObject();
 	private static JSONObject obj = new JSONObject();
+	private static boolean APITokenSet = false;
 	private static String tokenCodes = null;
 	private static long initiatedTime;
 	private static int expiraryTime;
+
+	public static boolean hasAPITokenSet() {
+		return APITokenSet;
+	}
 
 	/**
 	 * The constructor for trying to get an API Token.
@@ -29,6 +34,7 @@ public class OSUAPI {
 		obj.put("scope", "public");
 
 		parent.put("obj", obj.toString());
+		APITokenSet = true;
 	}
 
 	/**
