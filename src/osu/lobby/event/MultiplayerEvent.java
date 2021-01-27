@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import irc.IRCClient;
 import irc.event.Event;
+import irc.event.EventFireable;
 import irc.event.EventType;
 import irc.handlers.IRCEventHandler;
 
@@ -42,12 +43,12 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable target) {
 		Event event = toEvent();
 		for (int i = 0; i < data.length; i++) {
 			event.addData(groupName[i], data[i]);
 		}
-		client.fireEvent(event);
+		target.fireEvent(event);
 		return true;
 	}
 }

@@ -59,7 +59,8 @@ public class SimpleIRCServer extends Thread {
 
 	public void write(String message) {
 		try {
-			writer.write(message);
+			System.out.println(message);
+			writer.write(message+"\n");
 			writer.flush();
 		} catch (Exception e) {
 		}
@@ -77,6 +78,12 @@ public class SimpleIRCServer extends Thread {
 		}
 		synchronized (messages) {
 			return messages.poll();
+		}
+	}
+	
+	public void skipMessages(int count) {
+		for(int i = 0 ; i<count;i++) {
+			getMessage();
 		}
 	}
 

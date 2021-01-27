@@ -10,11 +10,13 @@ public class WaitForEventListener implements EventListener {
 	}
 
 	public void listen() {
-		synchronized (this) {
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		if (event == null) {
+			synchronized (this) {
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

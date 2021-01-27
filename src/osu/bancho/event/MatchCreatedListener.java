@@ -4,16 +4,19 @@ import java.util.HashMap;
 
 import irc.event.Event;
 import irc.event.WaitForEventListener;
+import osu.bancho.BanchoBot;
 import osu.lobby.LobbyHandler;
 
 public class MatchCreatedListener extends WaitForEventListener {
 
+	private BanchoBot client;
+
 	private String title;
 	private String id;
-	private LobbyHandler lobbyHandler;
 
-	public MatchCreatedListener(String name) {
+	public MatchCreatedListener(BanchoBot client, String name) {
 		super(PMEvent.LOBBY_CREATED);
+		this.client = client;
 		this.title = name;
 	}
 
@@ -21,11 +24,13 @@ public class MatchCreatedListener extends WaitForEventListener {
 	public void trigger(Event event) {
 		HashMap<String, Object> data = event.getData();
 		// Make sure we're getting the id for the right room
-		if (data.containsKey("name") && ((String) data.get("title")).equals(title)) {
+
+		if (data.containsKey("title") && ((String) data.get("title")).equals(title)) {
 			// Make sure everything was successfully captured
-			if (data.containsKey("id") && data.containsKey("lobbyHandler")) {
+			if (data.containsKey("id")) {
 				id = (String) data.get("id");
-				lobbyHandler = (LobbyHandler) data.get("lobbyHandler");
+				client.setLobby(title, new LobbyHandler(client, id));
+
 			}
 			super.trigger(event);
 		}
@@ -33,9 +38,5 @@ public class MatchCreatedListener extends WaitForEventListener {
 
 	public String getId() {
 		return id;
-	}
-
-	public LobbyHandler getLobbyHandler() {
-		return lobbyHandler;
 	}
 }

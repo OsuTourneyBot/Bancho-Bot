@@ -2,10 +2,11 @@ package irc;
 
 import java.util.ArrayList;
 
+import irc.event.EventFireable;
 import irc.handlers.ChannelHandler;
 import irc.handlers.IRCEventHandler;
 
-public class Channel {
+public class Channel extends EventFireable {
 
 	private IRCClient client;
 
@@ -13,6 +14,7 @@ public class Channel {
 	private ChannelHandler channelHandler;
 
 	public Channel(IRCClient client, String name) {
+		super();
 		this.client = client;
 		this.name = name;
 		channelHandler = new ChannelHandler(this, new ArrayList<IRCEventHandler>());

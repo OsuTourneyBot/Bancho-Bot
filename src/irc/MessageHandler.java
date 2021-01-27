@@ -73,7 +73,6 @@ public class MessageHandler extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }

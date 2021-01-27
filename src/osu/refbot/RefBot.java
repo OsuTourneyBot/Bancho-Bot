@@ -7,7 +7,6 @@ import java.util.HashSet;
 import logger.Logger;
 import osu.bancho.BanchoBot;
 import osu.lobby.LobbyHandler;
-import osu.lobby.event.MultiplayerEvent;
 import osu.tournamentData.Beatmap;
 import osu.tournamentData.Mappool;
 import osu.tournamentData.Ruleset;
@@ -46,7 +45,7 @@ public class RefBot extends Thread {
 		this.rollHandler = new RollHandler(this);
 		this.totalBans = 0;
 		this.mappool = mappool;
-		this.lobby.addLobbyHandler(commandHandler);
+		this.lobby.addHandler(commandHandler);
 		this.presentPlayers = new String[rule.getPlayers().length][];
 		this.validRoll = new boolean[presentPlayers.length];
 		this.rolls = new int[presentPlayers.length];
@@ -160,11 +159,11 @@ public class RefBot extends Thread {
 	}
 
 	private void getRolls() {
-		lobby.addLobbyHandler(rollHandler, 0);
+		lobby.addHandler(rollHandler, 0);
 		lobby.message("Captains, please roll \"!roll\".");
 		lobby.flush();
 		thisWait();
-		lobby.removeLobbyHanlder(rollHandler);
+		lobby.removeHandler(rollHandler);
 		if (rolls[0] > rolls[1]) {
 			whosBan = 0;
 			whosPick = 1;

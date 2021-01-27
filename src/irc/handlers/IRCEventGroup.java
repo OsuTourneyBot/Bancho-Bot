@@ -3,6 +3,7 @@ package irc.handlers;
 import java.util.ArrayList;
 
 import irc.IRCClient;
+import irc.event.EventFireable;
 
 public abstract class IRCEventGroup implements IRCEventHandler {
 
@@ -16,7 +17,7 @@ public abstract class IRCEventGroup implements IRCEventHandler {
 	public abstract String[] match(String[] data);
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable client) {
 		for (IRCEventHandler handler : handlers) {
 			String[] parts = handler.match(data);
 			if (parts != null) {

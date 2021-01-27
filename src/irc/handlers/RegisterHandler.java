@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import irc.IRCClient;
 import irc.event.Event;
+import irc.event.EventFireable;
 import irc.event.EventType;
 import irc.event.IRCEvent;
 
@@ -32,13 +33,13 @@ public class RegisterHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable target) {
 		Event event = IRCEvent.REGISTER.toEvent();
 		event.addData("code", data[0]);
 		if (data[0].equals("001")) {
 			event.addData("nick", data[1]);
 		}
-		client.fireEvent(event);
+		target.fireEvent(event);
 		return true;
 	}
 

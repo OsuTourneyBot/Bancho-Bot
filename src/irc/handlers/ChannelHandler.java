@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import irc.Channel;
+import irc.event.EventFireable;
 
 public class ChannelHandler extends IRCEventGroup {
 
@@ -26,5 +27,10 @@ public class ChannelHandler extends IRCEventGroup {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public boolean handle(String[] data, EventFireable client) {
+		return super.handle(data, channel);
 	}
 }

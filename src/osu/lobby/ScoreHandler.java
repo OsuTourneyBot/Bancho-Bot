@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import irc.IRCClient;
+import irc.event.EventFireable;
 import irc.handlers.IRCEventHandler;
 import logger.Logger;
 
@@ -30,7 +31,7 @@ public class ScoreHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable target) {
 		logger.println(this, "[" + data[0] + "] Score:" + data[1]);
 		lobby.setPlayerScore(data[0], Integer.parseInt(data[1]));
 		return true;

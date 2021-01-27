@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import irc.IRCClient;
 import irc.event.Event;
+import irc.event.EventFireable;
 import irc.handlers.IRCEventHandler;
 import osu.bancho.event.PMEvent;
 import osu.lobby.LobbyHandler;
@@ -27,18 +28,16 @@ public class BanchoPMHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable target) {
 		Event event = PMEvent.LOBBY_CREATED.toEvent();
 		Matcher match = createTournement.matcher(data[2]);
 		if (match.matches()) {
 			String title = match.group(2);
 			String id = "mp_" + match.group(1);
-			LobbyHandler lobbyHandler = new LobbyHandler(client.getChannel(id));
 			event.addData("title", title);
 			event.addData("id", id);
-			event.addData("lobbyHandler", lobbyHandler);
 		}
-		client.fireEvent(event);
+		target.fireEvent(event);
 		return true;
 	}
 

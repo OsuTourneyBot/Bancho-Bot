@@ -1,20 +1,29 @@
 package test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.Timeout;
 
 import irc.IRCClient;
+import irc.event.IRCEvent;
 
 class IRCTest {
 
+	@Rule
+	public Timeout globalTimeout = Timeout.seconds(1);
+
 	private static final int PORT = 6667;
+	private static final String SERVER_NAME="!server";
 	private static final String USERNAME = "username";
 	private static final String PASSWORD = "password";
+	private static final String CHANNEL_NAME="test_channel";
 	private SimpleIRCServer server;
 	private IRCClient client;
 
@@ -29,6 +38,18 @@ class IRCTest {
 	void teardown() {
 		server.close();
 		client.close();
+	}
+
+	private void connect() {
+		new Thread(() -> {
+			server.skipMessages(3);
+			server.write(":" + SERVER_NAME + " 001 " + USERNAME + " :Welcome");
+		}).start();
+		try {
+			client.connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -62,7 +83,7 @@ class IRCTest {
 			}
 		}
 		assertEquals(7, res, "PASS, NICK and USER messages");
-		server.write(":test 001 " + USERNAME + " :Welcome");
+		server.write(":server 001 " + USERNAME + " :Welcome");
 	}
 
 	@Test
@@ -75,9 +96,22 @@ class IRCTest {
 				assertTrue("Not Connected", !client.isConnected());
 			}
 		}).start();
-		for (int i = 0; i < 3; i++) {
-			server.getMessage();
-		}
+		server.skipMessages(3);
 		server.write(":test 464");
+	}
+
+	@Test
+	void pingPongTest() {
+		connect();
+		server.write("PING test ping");
+		assertEquals("PONG test ping", server.getMessage());
+	}
+	
+	@Test
+	void joinChannelTest() {
+		connect();
+		server.write(":"+SERVER_NAME+" JOIN #"+CHANNEL_NAME);
+		client.waitForEvent(IRCEvent.JOIN);
+		assertNotNull(client.getChannel(CHANNEL_NAME));
 	}
 }

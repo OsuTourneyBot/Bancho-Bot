@@ -7,7 +7,7 @@ public class Event {
 	private HashMap<String, Object> data;
 
 	public Event(EventType type) {
-		this(type, null);
+		this(type, new HashMap<String, Object>());
 	}
 
 	public Event(EventType type, HashMap<String, Object> data) {

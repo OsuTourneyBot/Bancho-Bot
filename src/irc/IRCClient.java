@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import irc.event.Event;
+import irc.event.EventFireable;
 import irc.event.EventListener;
 import irc.event.EventType;
 import irc.event.IRCEvent;
+import irc.event.JoinEventListener;
+import irc.event.PingEventListener;
 import irc.event.WaitForEventListener;
 import irc.handlers.IRCEventHandler;
 
-public class IRCClient {
+public class IRCClient extends EventFireable {
 
 	private String adress;
 	private int port;
@@ -21,33 +24,41 @@ public class IRCClient {
 	private boolean connected = false;
 
 	private HashMap<String, Channel> channels;
-	private HashMap<EventType, ArrayList<EventListener>> eventListeners;
 
 	private Socket socket;
 	private RateLimitedPrintStream printStream;
 	private MessageHandler messageHandler;
 
 	public IRCClient(String adress, int port, String username, String password) {
+		super();
 		this.adress = adress;
 		this.port = port;
 		this.username = username;
 		this.password = password;
 
 		this.channels = new HashMap<String, Channel>();
-		this.eventListeners = new HashMap<EventType, ArrayList<EventListener>>();
+
+		addEventListener(new JoinEventListener(this));
+		addEventListener(new PingEventListener(this));
 	}
 
 	public boolean isConnected() {
 		return connected;
 	}
 
-	public boolean addChannel(Channel channel) {
-		if (channels.containsKey(channel.getName())) {
+	private Channel createChannel(String name) {
+		return new Channel(this, name);
+	}
+
+	public boolean addChannel(String name) {
+		if (channels.containsKey(name)) {
 			return false;
 		}
-		channels.put(channel.getName(), channel);
+		Channel channel = createChannel(name);
+		channels.put(name, channel);
 		messageHandler.addHandler(channel.getChannelHandler());
 		return true;
+
 	}
 
 	public boolean removeChannel(Channel channel) {
@@ -71,42 +82,6 @@ public class IRCClient {
 		messageHandler.addHandler(handler);
 	}
 
-	public void addEventListener(EventListener listener) {
-		addEventListener(listener, listener.getEventType());
-	}
-
-	public void addEventListener(EventListener listener, EventType type) {
-		if (!eventListeners.containsKey(type)) {
-			eventListeners.put(type, new ArrayList<EventListener>());
-		}
-		eventListeners.get(type).add(listener);
-	}
-
-	public void removeEventListener(EventListener listener) {
-		removeEventListener(listener, listener.getEventType());
-	}
-
-	public void removeEventListener(EventListener listener, EventType type) {
-		if (eventListeners.containsKey(type)) {
-			eventListeners.get(type).remove(listener);
-		}
-	}
-
-	public void fireEvent(Event event) {
-		if (eventListeners.containsKey(event.getType())) {
-			for (EventListener listener : eventListeners.get(event.getType())) {
-				listener.trigger(event);
-			}
-		}
-	}
-
-	public Event waitForEvent(EventType eventType) {
-		WaitForEventListener listener = new WaitForEventListener(eventType);
-		addEventListener(listener);
-		listener.listen();
-		return listener.getEvent();
-	}
-
 	public void connect() throws Exception {
 		if (connected) {
 			throw new IOException("IRC Client already connected");
@@ -127,9 +102,11 @@ public class IRCClient {
 		write("PASS " + password);
 		write("NICK " + username);
 		write("USER " + username);
+		WaitForEventListener listener = createWaitForEvent(IRCEvent.REGISTER);
 		flush();
-		Event event = waitForEvent(IRCEvent.REGISTER);
-		System.out.println(((String) event.getData().get("code")));
+		listener.listen();
+		removeEventListener(listener);
+		Event event = listener.getEvent();
 		if (((String) event.getData().get("code")).equals("001")) {
 			this.connected = true;
 		} else {

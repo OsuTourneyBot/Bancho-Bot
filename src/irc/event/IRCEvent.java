@@ -1,5 +1,5 @@
 package irc.event;
 
 public enum IRCEvent implements EventType {
-	REGISTER;
+	REGISTER, JOIN, PART,PING,PONG;
 }

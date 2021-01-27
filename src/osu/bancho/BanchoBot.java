@@ -37,15 +37,14 @@ public class BanchoBot extends IRCClient {
 	}
 
 	public LobbyHandler makeLobby(String title) {
-		MatchCreatedListener listener = new MatchCreatedListener(title);
+		MatchCreatedListener listener = new MatchCreatedListener(this, title);
 		addEventListener(listener);
 		pmBanchoBot("!mp make " + title);
 		flush();
 		listener.listen();
 		removeEventListener(listener);
 		if (listener.getId() != null) {
-			lobbies.put(title, listener.getLobbyHandler());
-			return listener.getLobbyHandler();
+			return getLobby(title);
 		} else {
 			return null;
 		}

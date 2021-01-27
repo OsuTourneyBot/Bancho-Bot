@@ -3,7 +3,7 @@ package osu.refbot;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import irc.IRCClient;
+import irc.event.EventFireable;
 import irc.handlers.IRCEventHandler;
 
 public class RollHandler implements IRCEventHandler {
@@ -32,7 +32,7 @@ public class RollHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable target) {
 		if (data[0].equals("RollRequest")) {
 			boolean isCaptain = false;
 			for (int i = 0; i < bot.getPresentPlayers().length; i++) {

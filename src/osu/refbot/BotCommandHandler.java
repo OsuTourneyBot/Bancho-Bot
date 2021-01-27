@@ -1,6 +1,6 @@
 package osu.refbot;
 
-import irc.IRCClient;
+import irc.event.EventFireable;
 import irc.handlers.IRCEventHandler;
 
 public class BotCommandHandler implements IRCEventHandler {
@@ -28,7 +28,7 @@ public class BotCommandHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable target) {
 		if (currentCommand == BotCommand.READY) {
 			bot.setPlayerState(data[0], 1);
 			if (waitingToStart && bot.allReady()) {

@@ -1,15 +1,10 @@
 package irc.handlers;
 
-import irc.IRCClient;
-import logger.Logger;
+import irc.event.Event;
+import irc.event.EventFireable;
+import irc.event.IRCEvent;
 
 public class PingPongHandler implements IRCEventHandler {
-
-	private Logger logger;
-
-	public PingPongHandler() {
-		logger = Logger.getLogger();
-	}
 
 	@Override
 	public String[] match(String[] data) {
@@ -24,14 +19,10 @@ public class PingPongHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
-		if (data[0].equals("PING")) {
-			logger.println(this, data[0] + " " + data[1]);
-			client.write("PONG " + data[1]);
-			client.flush();
-		}else {
-			logger.println(this, "PONGed");
-		}
+	public boolean handle(String[] data, EventFireable target) {
+		Event event = IRCEvent.valueOf(data[0]).toEvent();
+		event.addData("data", data[1]);
+		target.fireEvent(event);
 		return true;
 	}
 

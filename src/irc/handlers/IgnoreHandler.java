@@ -1,6 +1,6 @@
 package irc.handlers;
 
-import irc.IRCClient;
+import irc.event.EventFireable;
 
 public class IgnoreHandler implements IRCEventHandler {
 
@@ -17,7 +17,7 @@ public class IgnoreHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
+	public boolean handle(String[] data, EventFireable client) {
 		return true;
 	}
 
