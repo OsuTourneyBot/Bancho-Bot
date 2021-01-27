@@ -18,6 +18,11 @@ public class Channel extends EventFireable {
 		this.client = client;
 		this.name = name;
 		channelHandler = new ChannelHandler(this, new ArrayList<IRCEventHandler>());
+		client.addEventHandler(channelHandler);
+	}
+
+	public void close() {
+		client.removeEventHandler(channelHandler);
 	}
 
 	public IRCClient getClient() {
