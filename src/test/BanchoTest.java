@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.rules.Timeout;
 
 import osu.bancho.BanchoBot;
-import osu.lobby.LobbyHandler;
+import osu.lobby.MultiplayerLobby;
 import osu.tournamentData.Beatmap;
 
 class BanchoTest {
@@ -57,7 +57,7 @@ class BanchoTest {
 		connect();
 		new Thread(() -> {
 			client.makeLobby(LOBBY_NAME);
-			LobbyHandler lobby = client.getLobby(LOBBY_NAME);
+			MultiplayerLobby lobby = client.getLobby(LOBBY_NAME);
 			assertNotNull(lobby);
 			lobby.message("test message");
 			lobby.flush();
@@ -75,7 +75,7 @@ class BanchoTest {
 		connect();
 		new Thread(() -> {
 			client.makeLobby(LOBBY_NAME);
-			LobbyHandler lobby = client.getLobby(LOBBY_NAME);
+			MultiplayerLobby lobby = client.getLobby(LOBBY_NAME);
 			assertNotNull(lobby);
 			// Random map no mod
 			Beatmap b = new Beatmap(987654, 0, false);

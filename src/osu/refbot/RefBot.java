@@ -6,7 +6,8 @@ import java.util.HashSet;
 
 import logger.Logger;
 import osu.bancho.BanchoBot;
-import osu.lobby.LobbyHandler;
+import osu.lobby.MultiplayerLobby;
+import osu.lobby.event.MultiplayerEvent;
 import osu.tournamentData.Beatmap;
 import osu.tournamentData.Mappool;
 import osu.tournamentData.Ruleset;
@@ -15,7 +16,7 @@ public class RefBot extends Thread {
 
 	private Logger logger;
 
-	private LobbyHandler lobby;
+	private MultiplayerLobby lobby;
 	private Ruleset rule;
 	private HashMap<String, Integer> playerTeam;
 	private HashMap<String, Integer> playerState;
@@ -82,7 +83,7 @@ public class RefBot extends Thread {
 		startMatch();
 	}
 
-	public LobbyHandler getLobby() {
+	public MultiplayerLobby getLobby() {
 		return lobby;
 	}
 
@@ -235,7 +236,7 @@ public class RefBot extends Thread {
 				lobby.message("Remaining songs: " + getRemainingPicks());
 				lobby.flush();
 				// Wait for the song to be chosen
-				thisWait();
+				lobby.waitForEvent(MultiplayerEvent.MAP_CHANGED);
 				commandHandler.setBotCommand(null);
 				// Change who is picking
 				whosPick = (whosPick + 1) % rule.getPlayers().length;

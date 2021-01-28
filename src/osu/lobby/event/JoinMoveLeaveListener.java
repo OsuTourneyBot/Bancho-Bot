@@ -5,13 +5,13 @@ import java.util.HashMap;
 import irc.event.Event;
 import irc.event.EventListener;
 import irc.event.EventType;
-import osu.lobby.LobbyHandler;
+import osu.lobby.MultiplayerLobby;
 
 public class JoinMoveLeaveListener implements EventListener {
 
-	private final LobbyHandler lobby;
+	private final MultiplayerLobby lobby;
 
-	public JoinMoveLeaveListener(LobbyHandler lobby) {
+	public JoinMoveLeaveListener(MultiplayerLobby lobby) {
 		this.lobby = lobby;
 	}
 

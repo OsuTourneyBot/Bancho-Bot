@@ -5,7 +5,7 @@ import java.util.HashMap;
 import irc.event.Event;
 import irc.event.WaitForEventListener;
 import osu.bancho.BanchoBot;
-import osu.lobby.LobbyHandler;
+import osu.lobby.MultiplayerLobby;
 
 public class MatchCreatedListener extends WaitForEventListener {
 
@@ -29,7 +29,7 @@ public class MatchCreatedListener extends WaitForEventListener {
 			// Make sure everything was successfully captured
 			if (data.containsKey("id")) {
 				id = (String) data.get("id");
-				client.setLobby(title, new LobbyHandler(client, id));
+				client.setLobby(title, new MultiplayerLobby(client, id));
 
 			}
 			super.trigger(event);

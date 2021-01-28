@@ -8,7 +8,7 @@ import irc.event.Event;
 import irc.event.EventFireable;
 import irc.handlers.IRCEventHandler;
 import osu.bancho.event.PMEvent;
-import osu.lobby.LobbyHandler;
+import osu.lobby.MultiplayerLobby;
 
 public class BanchoPMHandler implements IRCEventHandler {
 

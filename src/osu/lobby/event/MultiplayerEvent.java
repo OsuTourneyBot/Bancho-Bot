@@ -10,11 +10,15 @@ import irc.handlers.IRCEventHandler;
 
 public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	TIMER_FINISH("Countdown finished"), ALL_READY("All players are ready"),
-	MAP_SELECTED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) .*", new String[] { "beatmapID" }),
+	MAP_CHANGED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) .*", new String[] { "beatmapID" }),
 	MAP_FINISH("The match has finished!"), READY_OR_TIMER("(?:Countdown finished|All players are ready)"),
 	PLAYER_JOIN("(.+) joined in slot ([0-9]+)\\.", new String[] { "player", "slot" }),
 	PLAYER_MOVE("(.+) moved to slot ([0-9]+)", new String[] { "player", "slot" }),
-	PLAYER_LEAVE("(.+) left the game\\.", new String[] { "player" });
+	PLAYER_LEAVE("(.+) left the game\\.", new String[] { "player" }),
+	SCORE_REPORT("(.+) finished playing \\(Score: ([0-9]+), (PASSED|FAILED)\\)\\.",
+			new String[] { "player", "score", "pass" }),
+	PLAYER_SETTINGS("Slot ([0-9]+) (Ready|Not Ready) https://osu.ppy.sh/u/([0-9]+) (.+)\\w*\\[(.+)\\]",
+			new String[] { "slot", "ready", "uid", "player", "mods" });
 
 	private final Pattern pattern;
 	private final String[] groupName;

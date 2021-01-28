@@ -11,14 +11,15 @@ import irc.event.WaitForEventListener;
 import irc.handlers.IRCEventHandler;
 import osu.lobby.event.JoinMoveLeaveListener;
 import osu.lobby.event.MultiplayerEvent;
+import osu.lobby.event.ScoreReportListener;
 import osu.tournamentData.Beatmap;
 import osu.tournamentData.Mod;
 
-public class LobbyHandler extends Channel {
+public class MultiplayerLobby extends Channel {
 
 	private LobbyBanchoHandlerGroup banchoHandler;
-	private ScoreHandler scoreHandler;
-	private JoinMoveLeaveListener listener;
+	private JoinMoveLeaveListener joinMoveLeavelistener;
+	private ScoreReportListener scoreReportListener;
 	private Beatmap currentMap;
 
 	private HashMap<String, Integer> playerScores;
@@ -26,7 +27,7 @@ public class LobbyHandler extends Channel {
 
 	private HashMap<String, Integer> playerSlots;
 
-	public LobbyHandler(IRCClient bancho, String name) {
+	public MultiplayerLobby(IRCClient bancho, String name) {
 		super(bancho, name);
 
 		this.playerScores = new HashMap<String, Integer>();
@@ -39,22 +40,24 @@ public class LobbyHandler extends Channel {
 		for (MultiplayerEvent event : MultiplayerEvent.values()) {
 			this.banchoHandler.addHandler(event);
 		}
-		this.scoreHandler = new ScoreHandler(this);
-		this.banchoHandler.addHandler(scoreHandler);
 		addHandler(banchoHandler);
 
-		listener = new JoinMoveLeaveListener(this);
-		addEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
-		addEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
-		addEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
+		joinMoveLeavelistener = new JoinMoveLeaveListener(this);
+		addEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_JOIN);
+		addEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_MOVE);
+		addEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_LEAVE);
+
+		scoreReportListener = new ScoreReportListener(this);
+		addEventListener(scoreReportListener);
 	}
 
 	@Override
 	public void close() {
 		super.close();
-		removeEventListener(listener, MultiplayerEvent.PLAYER_JOIN);
-		removeEventListener(listener, MultiplayerEvent.PLAYER_MOVE);
-		removeEventListener(listener, MultiplayerEvent.PLAYER_LEAVE);
+		removeEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_JOIN);
+		removeEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_MOVE);
+		removeEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_LEAVE);
+		removeEventListener(scoreReportListener);
 	}
 
 	public void closeLobby() {
@@ -131,7 +134,7 @@ public class LobbyHandler extends Channel {
 			message("!mp mods" + Mod.getNames(m.getMod()));
 		}
 		message("!mp map " + m.getID());
-		HashMap<String, Object> data = flushWaitForEvent(MultiplayerEvent.MAP_SELECTED).getData();
+		HashMap<String, Object> data = flushWaitForEvent(MultiplayerEvent.MAP_CHANGED).getData();
 		if (data.containsKey("beatmapID")) {
 			int id = Integer.parseInt((String) data.get("beatmapID"));
 			if (id == m.getID()) {
