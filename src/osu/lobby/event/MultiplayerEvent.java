@@ -34,7 +34,10 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	}
 
 	public String[] match(String[] data) {
-		Matcher match = pattern.matcher(data[0]);
+		if (!data[0].startsWith("BanchoBot!")) {
+			return null;
+		}
+		Matcher match = pattern.matcher(data[2]);
 		if (match.matches()) {
 			String[] res = new String[match.groupCount()];
 			for (int i = 0; i < res.length; i++) {

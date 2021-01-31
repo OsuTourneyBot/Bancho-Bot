@@ -1,6 +1,5 @@
 package osu.lobby;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import irc.Channel;
@@ -8,7 +7,6 @@ import irc.IRCClient;
 import irc.event.Event;
 import irc.event.EventType;
 import irc.event.WaitForEventListener;
-import irc.handlers.IRCEventHandler;
 import osu.lobby.event.JoinMoveLeaveListener;
 import osu.lobby.event.MultiplayerEvent;
 import osu.lobby.event.ScoreReportListener;
@@ -17,7 +15,6 @@ import osu.tournamentData.Mod;
 
 public class MultiplayerLobby extends Channel {
 
-	private LobbyBanchoHandlerGroup banchoHandler;
 	private JoinMoveLeaveListener joinMoveLeavelistener;
 	private ScoreReportListener scoreReportListener;
 	private Beatmap currentMap;
@@ -35,12 +32,7 @@ public class MultiplayerLobby extends Channel {
 
 		this.playerSlots = new HashMap<String, Integer>();
 
-		this.banchoHandler = new LobbyBanchoHandlerGroup(new ArrayList<IRCEventHandler>());
-		// TODO: do something about this so it can be easily removed later
-		for (MultiplayerEvent event : MultiplayerEvent.values()) {
-			this.banchoHandler.addHandler(event);
-		}
-		addHandler(banchoHandler);
+		getChannelHandler().addHandler(MultiplayerEvent.values());
 
 		joinMoveLeavelistener = new JoinMoveLeaveListener(this);
 		addEventListener(joinMoveLeavelistener);
@@ -52,6 +44,7 @@ public class MultiplayerLobby extends Channel {
 	@Override
 	public void close() {
 		super.close();
+		getChannelHandler().removeHandler(MultiplayerEvent.values());
 		removeEventListener(joinMoveLeavelistener);
 		removeEventListener(scoreReportListener);
 	}

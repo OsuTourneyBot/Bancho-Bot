@@ -41,18 +41,6 @@ public class Channel extends EventFireable {
 		client.flush();
 	}
 
-	public void addHandler(IRCEventHandler handler) {
-		channelHandler.addHandler(handler);
-	}
-
-	public void addHandler(IRCEventHandler handler, int idx) {
-		channelHandler.addHandler(handler, idx);
-	}
-
-	public boolean removeHandler(IRCEventHandler handler) {
-		return channelHandler.removeHandler(handler);
-	}
-
 	public ChannelHandler getChannelHandler() {
 		return channelHandler;
 	}

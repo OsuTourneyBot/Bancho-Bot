@@ -27,16 +27,20 @@ public abstract class IRCEventGroup implements IRCEventHandler {
 		return false;
 	}
 
-	public void addHandler(IRCEventHandler handler) {
-		handlers.add(handler);
-	}
-
-	public void addHandler(IRCEventHandler handler, int idx) {
-		handlers.add(idx, handler);
+	public void addHandler(IRCEventHandler... handlers) {
+		for (IRCEventHandler handler : handlers) {
+			this.handlers.add(handler);
+		}
 	}
 
 	public boolean removeHandler(IRCEventHandler handler) {
 		return handlers.remove(handler);
+	}
+
+	public void removeHandler(IRCEventHandler... handlers) {
+		for (IRCEventHandler handler : handlers) {
+			this.handlers.remove(handler);
+		}
 	}
 
 }

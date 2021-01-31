@@ -49,8 +49,10 @@ public class RefBot extends Thread {
 		this.mappool = mappool;
 		this.presentPlayers = new String[rule.getPlayers().length][];
 		this.tiebreaker = new ArrayList<String>();
-
 		this.remainingPicks = new HashSet<String>();
+
+		this.lobby.getChannelHandler().addHandler(BotCommandEvent.values());
+
 		for (String map : mappool.getShortMapNames().keySet()) {
 			remainingPicks.add(map);
 		}
