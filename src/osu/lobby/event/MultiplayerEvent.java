@@ -66,7 +66,7 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 
 				@Override
 				public String[] match(String[] data) {
-					if (data[0].startsWith("banchobot!")) {
+					if (data[0].startsWith("BanchoBot!")) {
 						return new String[] { data[2] };
 					} else {
 						return null;
