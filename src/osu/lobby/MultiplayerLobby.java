@@ -32,7 +32,7 @@ public class MultiplayerLobby extends Channel {
 
 		this.playerSlots = new HashMap<String, Integer>();
 
-		getChannelHandler().addHandler(MultiplayerEvent.values());
+		getChannelHandler().addHandler(MultiplayerEvent.getEventHandlerGroup());
 
 		joinMoveLeavelistener = new JoinMoveLeaveListener(this);
 		addEventListener(joinMoveLeavelistener);
@@ -44,7 +44,7 @@ public class MultiplayerLobby extends Channel {
 	@Override
 	public void close() {
 		super.close();
-		getChannelHandler().removeHandler(MultiplayerEvent.values());
+		getChannelHandler().removeHandler(MultiplayerEvent.getEventHandlerGroup());
 		removeEventListener(joinMoveLeavelistener);
 		removeEventListener(scoreReportListener);
 	}

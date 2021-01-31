@@ -1,11 +1,13 @@
 package osu.lobby.event;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import irc.event.Event;
 import irc.event.EventFireable;
 import irc.event.EventType;
+import irc.handlers.IRCEventGroup;
 import irc.handlers.IRCEventHandler;
 
 public enum MultiplayerEvent implements EventType, IRCEventHandler {
@@ -21,6 +23,8 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 			new String[] { "slot", "ready", "uid", "player", "mods" }),
 	BANCHO_ROLL_RESPONSE("(.+) rolls ([0-9]{1,3}) point\\(s\\)", new String[] { "player", "amount" });
 
+	private static IRCEventGroup eventHandlerGroup;
+
 	private final Pattern pattern;
 	private final String[] groupName;
 
@@ -34,10 +38,7 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	}
 
 	public String[] match(String[] data) {
-		if (!data[0].startsWith("BanchoBot!")) {
-			return null;
-		}
-		Matcher match = pattern.matcher(data[2]);
+		Matcher match = pattern.matcher(data[0]);
 		if (match.matches()) {
 			String[] res = new String[match.groupCount()];
 			for (int i = 0; i < res.length; i++) {
@@ -57,5 +58,23 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 		}
 		target.fireEvent(event);
 		return true;
+	}
+
+	public static IRCEventGroup getEventHandlerGroup() {
+		if (eventHandlerGroup == null) {
+			eventHandlerGroup = new IRCEventGroup(new ArrayList<IRCEventHandler>()) {
+
+				@Override
+				public String[] match(String[] data) {
+					if (data[0].startsWith("banchobot!")) {
+						return new String[] { data[2] };
+					} else {
+						return null;
+					}
+				}
+			};
+			eventHandlerGroup.addHandler(values());
+		}
+		return eventHandlerGroup;
 	}
 }
