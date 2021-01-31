@@ -18,8 +18,8 @@ public class PingEventListener implements EventListener {
 	}
 
 	@Override
-	public EventType getEventType() {
-		return IRCEvent.PING;
+	public EventType[] getEventType() {
+		return new EventType[] { IRCEvent.PING };
 	}
 
 }

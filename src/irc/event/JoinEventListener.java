@@ -17,8 +17,8 @@ public class JoinEventListener implements EventListener {
 	}
 
 	@Override
-	public EventType getEventType() {
-		return IRCEvent.JOIN;
+	public EventType[] getEventType() {
+		return new EventType[] { IRCEvent.JOIN };
 	}
 
 }

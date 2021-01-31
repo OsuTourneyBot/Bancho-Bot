@@ -43,9 +43,7 @@ public class MultiplayerLobby extends Channel {
 		addHandler(banchoHandler);
 
 		joinMoveLeavelistener = new JoinMoveLeaveListener(this);
-		addEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_JOIN);
-		addEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_MOVE);
-		addEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_LEAVE);
+		addEventListener(joinMoveLeavelistener);
 
 		scoreReportListener = new ScoreReportListener(this);
 		addEventListener(scoreReportListener);
@@ -54,9 +52,7 @@ public class MultiplayerLobby extends Channel {
 	@Override
 	public void close() {
 		super.close();
-		removeEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_JOIN);
-		removeEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_MOVE);
-		removeEventListener(joinMoveLeavelistener, MultiplayerEvent.PLAYER_LEAVE);
+		removeEventListener(joinMoveLeavelistener);
 		removeEventListener(scoreReportListener);
 	}
 
@@ -145,7 +141,7 @@ public class MultiplayerLobby extends Channel {
 		return false;
 	}
 
-	private Event flushWaitForEvent(EventType eventType) {
+	public Event flushWaitForEvent(EventType eventType) {
 		WaitForEventListener listener = createWaitForEvent(eventType);
 		flush();
 		listener.listen();

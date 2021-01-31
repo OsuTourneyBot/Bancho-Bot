@@ -8,5 +8,5 @@ public interface EventListener {
 
 	public void trigger(Event event);
 
-	public EventType getEventType();
+	public EventType[] getEventType();
 }

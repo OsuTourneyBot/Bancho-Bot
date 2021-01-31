@@ -36,8 +36,9 @@ public class JoinMoveLeaveListener implements EventListener {
 	}
 
 	@Override
-	public EventType getEventType() {
-		return null;
+	public EventType[] getEventType() {
+		return new EventType[] { MultiplayerEvent.PLAYER_JOIN, MultiplayerEvent.PLAYER_MOVE,
+				MultiplayerEvent.PLAYER_LEAVE };
 	}
 
 }

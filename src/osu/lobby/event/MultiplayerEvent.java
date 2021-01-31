@@ -18,7 +18,8 @@ public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	SCORE_REPORT("(.+) finished playing \\(Score: ([0-9]+), (PASSED|FAILED)\\)\\.",
 			new String[] { "player", "score", "pass" }),
 	PLAYER_SETTINGS("Slot ([0-9]+) (Ready|Not Ready) https://osu.ppy.sh/u/([0-9]+) (.+)\\w*\\[(.+)\\]",
-			new String[] { "slot", "ready", "uid", "player", "mods" });
+			new String[] { "slot", "ready", "uid", "player", "mods" }),
+	BANCHO_ROLL_RESPONSE("(.+) rolls ([0-9]{1,3}) point\\(s\\)", new String[] { "player", "amount" });
 
 	private final Pattern pattern;
 	private final String[] groupName;

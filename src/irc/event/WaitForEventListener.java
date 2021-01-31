@@ -2,10 +2,10 @@ package irc.event;
 
 public class WaitForEventListener implements EventListener {
 
-	private EventType type;
+	private EventType[] type;
 	private Event event;
 
-	public WaitForEventListener(EventType type) {
+	public WaitForEventListener(EventType... type) {
 		this.type = type;
 	}
 
@@ -30,7 +30,7 @@ public class WaitForEventListener implements EventListener {
 	}
 
 	@Override
-	public EventType getEventType() {
+	public EventType[] getEventType() {
 		return type;
 	}
 

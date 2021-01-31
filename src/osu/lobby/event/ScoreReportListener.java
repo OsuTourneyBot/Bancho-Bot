@@ -24,8 +24,8 @@ public class ScoreReportListener implements EventListener {
 	}
 
 	@Override
-	public EventType getEventType() {
-		return MultiplayerEvent.SCORE_REPORT;
+	public EventType[] getEventType() {
+		return new EventType[] { MultiplayerEvent.SCORE_REPORT };
 	}
 
 }

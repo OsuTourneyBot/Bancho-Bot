@@ -14,20 +14,24 @@ public abstract class EventFireable {
 		addEventListener(listener, listener.getEventType());
 	}
 
-	public void addEventListener(EventListener listener, EventType type) {
-		if (!eventListeners.containsKey(type)) {
-			eventListeners.put(type, new ArrayList<EventListener>());
+	public void addEventListener(EventListener listener, EventType... types) {
+		for (EventType type : types) {
+			if (!eventListeners.containsKey(type)) {
+				eventListeners.put(type, new ArrayList<EventListener>());
+			}
+			eventListeners.get(type).add(listener);
 		}
-		eventListeners.get(type).add(listener);
 	}
 
 	public void removeEventListener(EventListener listener) {
 		removeEventListener(listener, listener.getEventType());
 	}
 
-	public void removeEventListener(EventListener listener, EventType type) {
-		if (eventListeners.containsKey(type)) {
-			eventListeners.get(type).remove(listener);
+	public void removeEventListener(EventListener listener, EventType... types) {
+		for (EventType type : types) {
+			if (eventListeners.containsKey(type)) {
+				eventListeners.get(type).remove(listener);
+			}
 		}
 	}
 
