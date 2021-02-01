@@ -54,7 +54,6 @@ public class BanchoBot extends IRCClient {
 		lobbies.put(name, handler);
 		if (!channels.containsKey(handler.getName())) {
 			channels.put(handler.getName(), handler);
-			messageHandler.addHandler(handler.getChannelHandler());
 		}
 	}
 

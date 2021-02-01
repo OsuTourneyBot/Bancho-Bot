@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import irc.event.Event;
+import irc.event.WaitForEventListener;
 import logger.Logger;
 import osu.bancho.BanchoBot;
 import osu.lobby.MultiplayerLobby;
@@ -191,13 +192,16 @@ public class RefBot extends Thread {
 	}
 
 	private void banPhase() {
+		WaitForEventListener listener = lobby.createWaitForEvent(BotCommandEvent.BAN);
 		while (totalBans < rule.getNumBans() * rule.getPlayers().length) {
 			lobby.message(getWhoIsBanning() + " Pick your ban using \"!ban <map>\".");
 			lobby.message("Remaining songs: " + getRemainingPicks());
+			lobby.flush();
 			String player;
 			String ban;
 			do {
-				Event event = lobby.flushWaitForEvent(BotCommandEvent.BAN);
+				listener.listen();
+				Event event = listener.getEvent();
 				HashMap<String, Object> data = event.getData();
 				player = (String) data.get("player");
 				ban = (String) data.get("ban");
@@ -205,6 +209,7 @@ public class RefBot extends Thread {
 			// Change who is banning
 			whosBan = (whosBan + 1) % rule.getPlayers().length;
 		}
+		lobby.removeEventListener(listener);
 	}
 
 	private void pickPhase() {
@@ -213,17 +218,21 @@ public class RefBot extends Thread {
 		while (whoWon == -1) {
 			// Let the players choose the map if it isn't a tiebreaker
 			if (!tiebreak) {
+				WaitForEventListener listener = lobby.createWaitForEvent(BotCommandEvent.PICK);
 				lobby.message(getWhoIsPicking() + " pick your song using \"!pick <map>\".");
 				lobby.message("Remaining songs: " + getRemainingPicks());
+				lobby.flush();
 				// Wait for the song to be chosen
 				String player;
 				String pick;
 				do {
-					Event event = lobby.flushWaitForEvent(BotCommandEvent.BAN);
+					listener.listen();
+					Event event = listener.getEvent();
 					HashMap<String, Object> data = event.getData();
 					player = (String) data.get("player");
 					pick = (String) data.get("pick");
 				} while (!pick(player, pick));
+				lobby.removeEventListener(listener);
 				// Change who is picking
 				whosPick = (whosPick + 1) % rule.getPlayers().length;
 			} else {

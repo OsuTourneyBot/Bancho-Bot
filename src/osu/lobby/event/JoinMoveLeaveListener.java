@@ -24,11 +24,11 @@ public class JoinMoveLeaveListener implements EventListener {
 		MultiplayerEvent eventType = (MultiplayerEvent) event.getType();
 		HashMap<String, Object> data = event.getData();
 		if (eventType == MultiplayerEvent.PLAYER_JOIN || eventType == MultiplayerEvent.PLAYER_MOVE) {
-			String name = (String) data.get("name");
+			String name = (String) data.get("player");
 			int slot = Integer.parseInt((String) data.get("slot"));
 			lobby.setPlayerSlot(name, slot);
 		} else if (eventType == MultiplayerEvent.PLAYER_LEAVE) {
-			String name = (String) data.get("name");
+			String name = (String) data.get("player");
 			lobby.removePlayerSlot(name);
 		} else {
 			System.err.println("Event listener fired for unintended event: " + eventType.name());

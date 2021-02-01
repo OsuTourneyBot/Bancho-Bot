@@ -103,7 +103,7 @@ public class MultiplayerLobby extends Channel {
 	public void waitToStart(int waitTime, int startDelay) {
 		message("Starting match in " + waitTime + " seconds");
 		message("!mp timer " + waitTime);
-		flushWaitForEvent(MultiplayerEvent.READY_OR_TIMER);
+		flushWaitForEvent(MultiplayerEvent.ALL_READY, MultiplayerEvent.TIMER_FINISH);
 		startGame(startDelay);
 	}
 
@@ -111,7 +111,14 @@ public class MultiplayerLobby extends Channel {
 		playerScores.clear();
 		playerMods.clear();
 		message("!mp start " + startDelay);
-		flushWaitForEvent(MultiplayerEvent.MAP_FINISH);
+
+		// Temporarily commented until the todo is completed
+		// flushWaitForEvent(MultiplayerEvent.MATCH_START);
+
+		// TODO: get the match settings here
+
+		// Also temporarily flushing done here
+		flushWaitForEvent(MultiplayerEvent.MATCH_FINISH);
 	}
 
 	public boolean setMap(Beatmap m) {
@@ -134,7 +141,7 @@ public class MultiplayerLobby extends Channel {
 		return false;
 	}
 
-	public Event flushWaitForEvent(EventType eventType) {
+	public Event flushWaitForEvent(EventType... eventType) {
 		WaitForEventListener listener = createWaitForEvent(eventType);
 		flush();
 		listener.listen();

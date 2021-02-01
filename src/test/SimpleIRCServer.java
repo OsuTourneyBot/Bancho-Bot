@@ -14,6 +14,9 @@ import java.util.Queue;
  * This class is used for testing the IRC connection
  */
 public class SimpleIRCServer extends Thread {
+
+	static final String SERVER_NAME = "!server";
+
 	private ServerSocket server;
 	private Socket connection;
 	private Queue<String> messages = new LinkedList<String>();
@@ -60,12 +63,12 @@ public class SimpleIRCServer extends Thread {
 	public void write(String message) {
 		try {
 			System.out.println(message);
-			writer.write(message+"\n");
+			writer.write(message + "\n");
 			writer.flush();
 		} catch (Exception e) {
 		}
 	}
-
+	
 	public String getMessage() {
 		if (messages.isEmpty()) {
 			try {
@@ -80,11 +83,19 @@ public class SimpleIRCServer extends Thread {
 			return messages.poll();
 		}
 	}
-	
+
 	public void skipMessages(int count) {
-		for(int i = 0 ; i<count;i++) {
+		for (int i = 0; i < count; i++) {
 			getMessage();
 		}
+	}
+
+	public void pmUser(String from, String to, String message) {
+		write(":" + from + SERVER_NAME + " PRIVMSG " + to + " :" + message);
+	}
+
+	public void msgChannel(String from, String channel, String message) {
+		write(":" + from + SERVER_NAME + " PRIVMSG " + channel + " :" + message);
 	}
 
 	public void close() {

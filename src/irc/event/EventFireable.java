@@ -43,13 +43,13 @@ public abstract class EventFireable {
 		}
 	}
 
-	public WaitForEventListener createWaitForEvent(EventType eventType) {
+	public WaitForEventListener createWaitForEvent(EventType... eventType) {
 		WaitForEventListener listener = new WaitForEventListener(eventType);
 		addEventListener(listener);
 		return listener;
 	}
 
-	public Event waitForEvent(EventType eventType) {
+	public Event waitForEvent(EventType... eventType) {
 		WaitForEventListener listener = new WaitForEventListener(eventType);
 		addEventListener(listener);
 		listener.listen();

@@ -2,7 +2,6 @@ package irc.handlers;
 
 import java.util.ArrayList;
 
-import irc.IRCClient;
 import irc.event.EventFireable;
 
 public abstract class IRCEventGroup implements IRCEventHandler {

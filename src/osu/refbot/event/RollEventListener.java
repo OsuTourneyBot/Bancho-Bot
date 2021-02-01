@@ -31,7 +31,8 @@ public class RollEventListener implements EventListener {
 		HashMap<String, Object> data = event.getData();
 		String player = (String) data.get("player");
 		int team = bot.getPlayerTeam(player);
-		int amount = Integer.parseInt((String) data.get("amount"));
+		String amountString = (String) data.get("amount");
+		int amount = amountString.isEmpty() ? 100 : Integer.parseInt(amountString);
 		EventType type = event.getType();
 		if (type == BotCommandEvent.PLAYER_ROLL) {
 			if (team != -1 && bot.getPresentPlayers()[team][0].equalsIgnoreCase(player)) {

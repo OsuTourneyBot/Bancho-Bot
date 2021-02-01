@@ -12,8 +12,8 @@ import irc.handlers.IRCEventHandler;
 
 public enum MultiplayerEvent implements EventType, IRCEventHandler {
 	TIMER_FINISH("Countdown finished"), ALL_READY("All players are ready"),
-	MAP_CHANGED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) .*", new String[] { "beatmapID" }),
-	MAP_FINISH("The match has finished!"), READY_OR_TIMER("(?:Countdown finished|All players are ready)"),
+	MAP_CHANGED("Changed beatmap to https://osu.ppy.sh/b/([0-9]*) ?(?:.*)", new String[] { "beatmapID" }),
+	MATCH_START("The match has started!"), MATCH_FINISH("The match has finished!"),
 	PLAYER_JOIN("(.+) joined in slot ([0-9]+)\\.", new String[] { "player", "slot" }),
 	PLAYER_MOVE("(.+) moved to slot ([0-9]+)", new String[] { "player", "slot" }),
 	PLAYER_LEAVE("(.+) left the game\\.", new String[] { "player" }),

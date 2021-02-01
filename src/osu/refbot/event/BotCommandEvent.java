@@ -43,7 +43,7 @@ public enum BotCommandEvent implements EventType, IRCEventHandler {
 		Event event = toEvent();
 		event.addData("player", data[0]);
 		for (int i = 1; i < data.length; i++) {
-			event.addData(groupName[i], data[i]);
+			event.addData(groupName[i-1], data[i]);
 		}
 		target.fireEvent(event);
 		return true;
