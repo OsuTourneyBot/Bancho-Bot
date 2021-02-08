@@ -4,9 +4,15 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
+import irc.event.Event;
+import irc.event.EventFireable;
+import irc.event.IRCEvent;
+import irc.event.JoinEventListener;
+import irc.event.PingEventListener;
+import irc.event.WaitForEventListener;
 import irc.handlers.IRCEventHandler;
 
-public class IRCClient {
+public class IRCClient extends EventFireable {
 
 	private String adress;
 	private int port;
@@ -14,31 +20,39 @@ public class IRCClient {
 	private String password;
 	private boolean connected = false;
 
-	private HashMap<String, Channel> channels;
+	protected HashMap<String, Channel> channels;
 
 	private Socket socket;
 	private RateLimitedPrintStream printStream;
-	private MessageHandler messageHandler;
+	protected MessageHandler messageHandler;
 
 	public IRCClient(String adress, int port, String username, String password) {
+		super();
 		this.adress = adress;
 		this.port = port;
 		this.username = username;
 		this.password = password;
 
 		this.channels = new HashMap<String, Channel>();
+
+		addEventListener(new JoinEventListener(this));
+		addEventListener(new PingEventListener(this));
 	}
 
 	public boolean isConnected() {
 		return connected;
 	}
 
-	public boolean addChannel(Channel channel) {
-		if (channels.containsKey(channel.getName())) {
+	private Channel createChannel(String name) {
+		return new Channel(this, name);
+	}
+
+	public boolean addChannel(String name) {
+		if (channels.containsKey(name)) {
 			return false;
 		}
-		channels.put(channel.getName(), channel);
-		messageHandler.addHandler(channel.getChannelHandler());
+		Channel channel = createChannel(name);
+		channels.put(name, channel);
 		return true;
 	}
 
@@ -63,33 +77,49 @@ public class IRCClient {
 		messageHandler.addHandler(handler);
 	}
 
-	public IRCClient getSelf() {
-		return this;
+	public void removeEventHandler(IRCEventHandler handler) {
+		messageHandler.removeHanlder(handler);
 	}
 
-	public void connect() throws IOException, InterruptedException {
+	public void connect() throws Exception {
 		if (connected) {
 			throw new IOException("IRC Client already connected");
 		}
 		socket = new Socket(adress, port);
 		printStream = new RateLimitedPrintStream(socket.getOutputStream());
-		messageHandler = new MessageHandler(getSelf(), socket.getInputStream());
+		messageHandler = new MessageHandler(this, socket.getInputStream());
 
 		listen();
 		register();
-		synchronized (this) {
-			this.wait();
-		}
 	}
 
 	private void listen() {
 		messageHandler.start();
 	}
 
-	public void register() {
+	private void register() throws Exception {
 		write("PASS " + password);
 		write("NICK " + username);
 		write("USER " + username);
+		WaitForEventListener listener = createWaitForEvent(IRCEvent.REGISTER);
 		flush();
+		listener.listen();
+		removeEventListener(listener);
+		Event event = listener.getEvent();
+		if (((String) event.getData().get("code")).equals("001")) {
+			this.connected = true;
+		} else {
+			throw new Exception("Register Failed");
+		}
+	}
+
+	public void close() {
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -6,10 +6,10 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import tournamentData.Beatmap;
-import tournamentData.Mappool;
-import tournamentData.Ruleset;
-import tournamentData.RulesetBuilder;
+import osu.tournamentData.Beatmap;
+import osu.tournamentData.Mappool;
+import osu.tournamentData.Ruleset;
+import osu.tournamentData.RulesetBuilder;
 
 public class FileIO {
 

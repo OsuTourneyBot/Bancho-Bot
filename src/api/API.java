@@ -42,7 +42,7 @@ public class API {
 	 * @return String of file
 	 * @throws IOException
 	 */
-	static String GET(String url, String[] headers, String[] bodies) throws IOException {
+	public static String GET(String url, String[] headers, String[] bodies) throws IOException {
 
 		Request.Builder builder = new Request.Builder().url(url);
 		for (int i = 0; i < headers.length; i++) {
@@ -67,7 +67,7 @@ public class API {
 	 * @return
 	 * @throws IOException
 	 */
-	static String POST(String url, String json, String[] headers, String[] bodies) throws IOException {
+	public static String POST(String url, String json, String[] headers, String[] bodies) throws IOException {
 		RequestBody body = RequestBody.create(json, JSON);
 		Request.Builder builder = new Request.Builder().url(url).post(body);
 

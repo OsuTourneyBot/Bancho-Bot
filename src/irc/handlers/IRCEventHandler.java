@@ -1,6 +1,6 @@
 package irc.handlers;
 
-import irc.IRCClient;
+import irc.event.EventFireable;
 
 public interface IRCEventHandler {
 	// return null if it does not find it
@@ -13,5 +13,5 @@ public interface IRCEventHandler {
 	 * @param client The IRCClient that received the event
 	 * @return Whether the event should not be handled by anything else
 	 */
-	public boolean handle(String[] data ,IRCClient client);
+	public boolean handle(String[] data ,EventFireable target);
 }

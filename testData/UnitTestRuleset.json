@@ -1,0 +1,17 @@
+
+{
+	"setName":"Unittest Ruleset",
+	"firstTo":3,
+	"players":[
+		["user1"],
+		["user2"]
+	],
+	"teamSize":1,
+	"numBans":1,
+	"teamMode":0,
+	"scoreMode":3,
+	"pickTime":60,
+	"banTime":60,
+	"warmUp":true,
+	"tiebreaker":["TB"]
+}

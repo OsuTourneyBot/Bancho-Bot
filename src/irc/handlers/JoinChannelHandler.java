@@ -1,16 +1,10 @@
 package irc.handlers;
 
-import irc.Channel;
-import irc.IRCClient;
-import logger.Logger;
+import irc.event.Event;
+import irc.event.EventFireable;
+import irc.event.IRCEvent;
 
 public class JoinChannelHandler implements IRCEventHandler {
-
-	private Logger logger;
-
-	public JoinChannelHandler() {
-		logger = Logger.getLogger();
-	}
 
 	@Override
 	public String[] match(String[] data) {
@@ -22,10 +16,11 @@ public class JoinChannelHandler implements IRCEventHandler {
 	}
 
 	@Override
-	public boolean handle(String[] data, IRCClient client) {
-		String channelName = data[3].substring(2);
-		client.addChannel(new Channel(client, channelName));
-		logger.println(this, "JOINED: " + channelName);
+	public boolean handle(String[] data, EventFireable target) {
+		String channelName = data[3].substring(1);
+		Event event = IRCEvent.JOIN.toEvent();
+		event.addData("channelName", channelName);
+		target.fireEvent(event);
 		return true;
 	}
 
